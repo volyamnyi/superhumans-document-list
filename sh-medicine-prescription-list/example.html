@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vite + React</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Nunito", sans-serif;
+    }
+    
+    body {
+      background-color: #f8f9fa;
+      font-size: 16px;
+    }
+    
+    .medicine-header {
+      background-color: #ffffff;
+      padding: 20px;
+      border-bottom: 2px solid #ccc;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .medicine-header-container {
+      display: flex;
+      gap: 20px;
+    }
+    
+    .patient-address-container, 
+    .patient-gender-age-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .patient-address-container a {
+      text-decoration: none;
+      color: #007bff;
+      font-weight: bold;
+    }
+    
+    .medicine-container {
+      background-color: #ffffff;
+      padding: 20px;
+      margin: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .medicine-row {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    
+    .medicine-method select,
+    .medicine-name input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    
+    .day-cells-container {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .day-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .plus, button[type="button"] {
+      padding: 8px 12px;
+      border-radius: 4px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    
+    .plus:hover, button[type="button"]:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <header class="medicine-header">
+      <div class="medicine-header-container">
+        <div class="patient-address-container">
+          <a href="/1">Назад</a>
+          <span>Адреса: Україна, Хмельницький, вул. Тернопільська, буд. 1</span>
+        </div>
+        <div class="patient-gender-age-container">
+          <span>Стать: Чоловіча</span>
+          <span>Вік: 25</span>
+          <span>Дата народження: 2000-02-23</span>
+        </div>
+      </div>
+    </header>
+    <main>
+      <form>
+        <div class="medicine-container">
+          <div class="medicine-row">
+            <div class="medicine-method">
+              <select>
+                <option value="ВВК">ВВК</option>
+                <option value="ВВС">ВВС</option>
+              </select>
+            </div>
+            <div class="medicine-name">
+              <input type="text" value="Анальгін" name="medicineName">
+            </div>
+            <div class="day-cells-container">
+              <div class="day-cell">
+                <input type="checkbox" checked>
+                <input type="time" value="06:00" name="time">
+                <input type="number" name="medicineDose">
+              </div>
+            </div>
+          </div>
+          <button type="button">Додати медикамент</button>
+        </div>
+        <button type="button">Оновити листок</button>
+      </form>
+    </main>
+  </div>
+</body>
+</html>

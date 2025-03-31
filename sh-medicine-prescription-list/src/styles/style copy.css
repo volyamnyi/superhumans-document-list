@@ -1,0 +1,307 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  outline: none;
+  font-family: "Nunito", sans-serif;
+  font-weight: 400;
+  list-style-type: none;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.flex {
+  display: flex;
+}
+
+.medicine-header {
+  margin-bottom: 30px;
+}
+
+.medicine-header-container {
+  column-gap: 50px;
+}
+
+.medicine-header-container > div {
+  row-gap: 10px;
+  flex-direction: column;
+}
+
+.patient-address-container {
+  column-gap: 15px;
+  max-width: 300px;
+}
+
+.patient-gender-age-container {
+  column-gap: 30px;
+}
+
+.patinet-details-container > ul {
+  display: flex;
+  flex-direction: column;
+  row-gap: 10px;
+}
+
+.medicine-container,
+.medicine-left,
+.medicine-row,
+.medicine-presc-details-row,
+.day-period,
+.day-cells-container {
+  display: flex;
+}
+.border {
+  border: 1px solid black;
+}
+.medicine-left {
+  width: 150px;
+}
+
+/*.medicine-group-name {
+  writing-mode: vertical-lr;
+  transform: rotate(180deg);
+  margin-top: 10px;
+  margin-right: 15px;
+}*/
+
+/*.medicine-group-name > select {
+  width: 25px;
+  height: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  text-indent: 1px;
+  text-overflow: "";
+  border: none;
+}*/
+
+
+.medicine-row {
+  /*flex-wrap: wrap;*/
+  gap: 50px;
+}
+.medicine-left > div {
+  margin-right: 50px;
+}
+
+.medicine-date-container {
+  margin-left: 118px;
+}
+.medicine-date {
+  border: 1px solid black;
+}
+
+.medicine-container,
+.medicine-presc-details-column {
+  flex-direction: column;
+}
+
+.medicine-method {
+}
+
+.searched-patients-dropdown {
+  width: 100px;
+}
+.searched-patients-dropdown a {
+  background-color: #fff;
+  margin-top: 1px;
+}
+
+.medicine-name {
+  width: 179px;
+  overflow: hidden;
+  margin-right: 10px;
+}
+
+.medicine-date,
+.day-period,
+.day-cell {
+  text-align: center;
+}
+.medicine-presc-details-row {
+  position: relative;
+}
+
+.plus {
+  position: absolute;
+  left: 190px;
+}
+
+.medicine-presc-details-column {
+  margin-left: -50px;
+}
+.day-cell {
+  display: flex;
+}
+
+.day-cell,
+.day-cell-input-label {
+  height: 20px;
+  width: 60px;
+  border: 1px solid black;
+}
+
+.day-period {
+}
+
+.day-period > div {
+  width: 60px;
+  border: 1px solid black;
+}
+
+.day-cell-input-label {
+  border: none;
+}
+.day-cell-input {
+  visibility: hidden;
+}
+
+.day-cell-time-input {
+  width: 20px;
+  /*visibility: hidden;*/
+}
+
+.day-cell-dose-input {
+  width: 20px;
+}
+
+/*Home page begin*/
+.home-page-container {
+  margin-left: 25%;
+  display: flex;
+  flex-direction: column;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f0f0f0;
+  font-size: 12px;
+}
+.sidebar {
+  width: 400px;
+  height: 100vh;
+  background-color: #add8e6; /* Light blue theme */
+  position: fixed;
+  padding: 10px 0;
+  border-right: 1px solid #ccc;
+}
+.sidebar .search-container {
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+}
+.sidebar .search-container > div {
+  display: flex;
+  flex-direction: column;
+  margin-left: 60px;
+}
+.sidebar .search-button {
+  position: absolute;
+  top: 15px;
+}
+
+.sidebar .search-container input {
+  flex: 1;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  width: 300px;
+}
+
+.searched-patients-dropdown > a {
+  display: block;
+  width: 300px;
+}
+.sidebar a {
+  padding: 5px 10px;
+  text-decoration: none;
+  color: #000;
+  background-color: #fff;
+  margin: 0.5px 0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+.sidebar a:hover {
+  background-color: #e0e0e0;
+}
+.content {
+  margin-left: 410px;
+  padding: 10px;
+}
+.profile {
+  border: 1px solid #ccc;
+  padding: 10px;
+  background-color: #fff;
+  margin-bottom: 10px;
+}
+.profile img {
+  vertical-align: middle;
+  margin-right: 5px;
+}
+.documents {
+  border: 1px solid #ccc;
+  width: 30%;
+  padding: 10px;
+  background-color: #fff;
+  margin-bottom: 10px;
+}
+.document-item {
+  padding: 5px 0;
+  margin: 5px 0;
+}
+.document-item.selected {
+  border-left: 4px solid #90ee90;
+  padding-left: 5px;
+}
+.comment-section {
+  border: 1px solid #ccc;
+  padding: 10px;
+  background-color: #fff;
+}
+.comment-section h3 {
+  margin: 0 0 5px 0;
+  font-size: 14px;
+}
+.comment-section input {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 5px;
+  box-sizing: border-box;
+}
+.buttons {
+  margin-bottom: 5px;
+}
+.btn {
+  display: inline-block;
+  padding: 2px 5px;
+  margin-right: 5px;
+  border: 1px solid #ccc;
+  background-color: #add8e6; /* Light blue theme */
+  cursor: pointer;
+  font-size: 12px;
+  border-radius: 3px;
+}
+.btn:hover {
+  background-color: #87ceeb; /* Darker light blue on hover */
+}
+.btn.red {
+  color: red;
+  background-color: #add8e6; /* Light blue theme */
+}
+.diagram {
+  max-width: 100%;
+  height: auto;
+  margin-top: 10px;
+  border: 1px solid #ccc;
+}
+
+/*Home page end*/
