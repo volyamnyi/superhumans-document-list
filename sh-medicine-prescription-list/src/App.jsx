@@ -9,6 +9,7 @@ import NewList from "./component/MedicineList/NewList";
 import { AuthContext } from "./component/auth/AuthProvider";
 import Registration from "./component/auth/Registration";
 import Login from "./component/auth/Login";
+import Admin from "./component/admin/Admin";
 import RequireAuth from "./component/auth/RequireAuth";
 import _404 from "./component/auth/_403";
 
@@ -36,6 +37,7 @@ function App() {
           <Route index element={!isLoggedIn ? <Login /> : <Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Registration />} />
+          <Route path="/admin" element={<Admin />} />
 
           <Route path="*" element={<Navigate to="/forbidden" />} />
           <Route path="/forbidden" element={<_404 />} />

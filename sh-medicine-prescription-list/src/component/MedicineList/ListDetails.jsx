@@ -37,7 +37,7 @@ export default function ListDetails(props) {
   const id = Id ? Id : useParams().id;
   const isScaled = Id ? true : false;
 
-  const [ROLE, setROLE] = React.useState(localStorage.getItem("role"));
+  const [ROLE, setROLE] = React.useState(localStorage.getItem("businessRole"));
   const [errorMessage, setErrorMessage] = React.useState("");
 
   const [medicineList, setMedicineList] = React.useState({

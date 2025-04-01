@@ -31,7 +31,7 @@ public class AuthController {
         User user = userService.login(credentials);
         user.setToken(userAuthenticationProvider.createToken(user));
         user.setPassword(null);
-        user.setUserRole(null);
+        //user.setUserRole(null);
         return ResponseEntity.ok(user);
     }
 

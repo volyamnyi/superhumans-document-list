@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
     lastName: "",
     login: "",
     token: "",
-    role: "",
+    businessRole: "",
   });
 
   const handleLogin = (accessToken) => {
@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("sub", decodedUser.sub);
     localStorage.setItem("firstName", decodedUser.firstName);
     localStorage.setItem("lastName", decodedUser.lastName);
-    localStorage.setItem("role", decodedUser.role);
+    localStorage.setItem("businessRole", decodedUser.businessRole);
     localStorage.setItem("accessToken", accessToken);
     setUser(decodedUser);
   };

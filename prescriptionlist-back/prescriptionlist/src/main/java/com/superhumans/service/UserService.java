@@ -2,6 +2,7 @@ package com.superhumans.service;
 
 import com.superhumans.exception.AppException;
 import com.superhumans.model.user.Credentials;
+import com.superhumans.model.user.Role;
 import com.superhumans.model.user.SignUp;
 import com.superhumans.model.user.User;
 import com.superhumans.repository.UserRepository;
@@ -43,8 +44,10 @@ public class UserService {
         User user = new User();
         user.setFirstName(userDto.firstName());
         user.setLastName(userDto.lastName());
+        user.setMiddleName(userDto.middleName());
         user.setLogin(userDto.login());
-        user.setUserRole(userDto.userRole());
+        user.setBusinessRole(userDto.businessRole());
+        user.setUserRole(Role.valueOf(userDto.userRole()));
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.password())));
 
         User savedUser = userRepository.save(user);

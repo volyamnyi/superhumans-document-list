@@ -6,8 +6,9 @@ const Registration = () => {
   const [registration, setRegistration] = useState({
     login: "",
     password: "",
-    firstName:"",
-    lastName:"",
+    firstName: "",
+    lastName: "",
+    middleName: "",
     password_confirm: "",
     userRole: "",
   });
@@ -44,7 +45,8 @@ const Registration = () => {
         email: "",
         password: "",
         password_confirm: "",
-        userRole:""
+        businessRole: "",
+        userRole,
       });
     } catch (error) {
       setSuccessMessage("");
@@ -58,15 +60,13 @@ const Registration = () => {
   const handleSelectUserRoleChange = (event) => {
     const name = event.target.name;
     const value = event.target.value;
-    
 
     setRegistration({ ...registration, [name]: value });
   };
- 
 
   return (
     <>
-    <style>
+      <style>
         {`
           .login-container {
             display: flex;
@@ -135,122 +135,157 @@ const Registration = () => {
           .logo {
             max-width:50%;
           }
-          .forgot-password {
+          .margin-bottom {
             margin-bottom: 10px;
           }
         `}
       </style>
-      <div>
-        <div>
-          <img src="assets/img/login.png" alt="Logo" />
-        </div>
-        <div>
+      <div className="login-container">
+        <div className="login-box">
+          <img src="/superhumans.svg" alt="Logo" className="logo" />
+
           <div>
-            {errorMessage && (
-              <p className="alert alert-danger">{errorMessage}</p>
-            )}
-            {successMessage && (
-              <p className="alert alert-success">{successMessage}</p>
-            )}
-            <h1>Реєстрація</h1>
-            <p>Введіть дані користувача:</p>
-            <form onSubmit={handleRegistration}>
-              <div>
-                <label>
-                  Оберіть вашу роль
-                  <span className="login-danger">*</span>
-                </label>
-                <select
-                  required
-                  id="userRole"
-                  name="userRole"
-                  value={registration.userRole}
-                  onChange={handleSelectUserRoleChange}
-                >
-                  <option value="">Ваша роль:</option>
-                  <option value="DOCTOR">DOCTOR</option>
-                  <option value="NURSE">NURSE</option>
-                </select>
-              </div>
-              <div>
-                <label>
-                  Логін <span className="login-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="login"
-                  name="login"
-                  onChange={handleInputChange}
-                  value={registration.login}
-                />
-              </div>
-              <div>
-                <label>
-                  Ім'я <span className="login-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                  onChange={handleInputChange}
-                  value={registration.firstName}
-                />
-              </div>
-              <div>
-                <label>
-                  Прізвище <span className="login-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  onChange={handleInputChange}
-                  value={registration.lastName}
-                />
-              </div>
-              
-              <div>
-                <label>
-                  Пароль <span className="login-danger">*</span>
-                </label>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  name="password"
-                  onChange={handleInputChange}
-                  value={registration.password}
-                />
-                <span
-                  className={`profile-views ${
-                    showPassword ? `feather-eye` : `feather-eye-off`
-                  } toggle-password`}
-                  onClick={handleToggleShowPassword}
-                />
-              </div>
-              <div>
-                <label>
-                  Підтвердіть пароль <span className="login-danger">*</span>
-                </label>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  name="password_confirm"
-                  onChange={handleInputChange}
-                  value={registration.password_confirm}
-                />
-                <span
-                  className={`profile-views ${
-                    showPassword ? `feather-eye` : `feather-eye-off`
-                  } toggle-password`}
-                  onClick={handleToggleShowPassword}
-                />
-              </div>
-              <div>
-                Вже зареєстровані? <Link to="/login">Login</Link>
-              </div>
-              <div>
-                <button type="submit">Зареєструватись</button>
-              </div>
-            </form>
+            <div>
+              {errorMessage && (
+                <p className="alert alert-danger">{errorMessage}</p>
+              )}
+              {successMessage && (
+                <p className="alert alert-success">{successMessage}</p>
+              )}
+              <h1>Реєстрація</h1>
+              <p>Введіть дані користувача:</p>
+              <form onSubmit={handleRegistration}>
+                <div className="margin-bottom">
+                  <label>
+                    Бізнес роль:
+                    <span className="login-danger">*</span>
+                  </label>
+                  <select
+                    required
+                    id="businessRole"
+                    name="businessRole"
+                    value={registration.businessRole}
+                    onChange={handleSelectUserRoleChange}
+                  >
+                    <option value="">Обрати роль</option>
+                    <option value="DOCTOR">DOCTOR</option>
+                    <option value="NURSE">NURSE</option>
+                  </select>
+                </div>
+                <div>
+                  <label>
+                    Роль користувача:
+                    <span className="login-danger">*</span>
+                  </label>
+                  <select
+                    required
+                    id="userRole"
+                    name="userRole"
+                    value={registration.userRole}
+                    onChange={handleSelectUserRoleChange}
+                  >
+                    <option value="">Обрати роль</option>
+                    <option value="ADMIN">ADMIN</option>
+                    <option value="EMPLOYEE">EMPLOYEE</option>
+                  </select>
+                </div>
+                <div>
+                  <label>
+                    Логін <span className="login-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="login"
+                    name="login"
+                    onChange={handleInputChange}
+                    value={registration.login}
+                  />
+                </div>
+                <div>
+                  <label>
+                    Ім'я <span className="login-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    onChange={handleInputChange}
+                    value={registration.firstName}
+                  />
+                </div>
+                <div>
+                  <label>
+                    Прізвище <span className="login-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    onChange={handleInputChange}
+                    value={registration.lastName}
+                  />
+                </div>
+
+                <div>
+                  <label>
+                    По-батькові <span className="login-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="middleName"
+                    name="middleName"
+                    onChange={handleInputChange}
+                    value={registration.middleName}
+                  />
+                </div>
+
+                <div>
+                  <label>
+                    Пароль <span className="login-danger">*</span>
+                  </label>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    onChange={handleInputChange}
+                    value={registration.password}
+                  />
+                  <span
+                    className={`toggle-password ${
+                      showPassword ? "eye" : "eye-off"
+                    }`}
+                    onClick={handleToggleShowPassword}
+                  >
+                    {showPassword ? "x" : "👁"}
+                  </span>
+                </div>
+                <div>
+                  <label>
+                    Підтвердіть пароль <span className="login-danger">*</span>
+                  </label>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password_confirm"
+                    onChange={handleInputChange}
+                    value={registration.password_confirm}
+                  />
+                  <span
+                    className={`toggle-password ${
+                      showPassword ? "eye" : "eye-off"
+                    }`}
+                    onClick={handleToggleShowPassword}
+                  >
+                    {showPassword ? "x" : "👁"}
+                  </span>
+                </div>
+                <div className="margin-bottom">
+                  Вже зареєстровані? <Link to="/login">Увійти</Link>
+                </div>
+                <div>
+                  <button type="submit">Зареєструватись</button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>

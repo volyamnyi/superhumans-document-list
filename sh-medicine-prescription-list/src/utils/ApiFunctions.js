@@ -186,7 +186,9 @@ export async function userLogin(login) {
 
 export async function userRegister(registration) {
   try {
-    const response = await api.post("/api/auth/register", registration);
+    const response = await api.post("/api/auth/register", registration,{
+      headers: getHeader(),
+    });
     return response.data;
   } catch (error) {
     if (error.response && error.response.data) {

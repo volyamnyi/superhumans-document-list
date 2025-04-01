@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.superhumans.model.user.Role;
 import com.superhumans.model.user.User;
 import com.superhumans.service.UserService;
 import jakarta.annotation.PostConstruct;
@@ -13,11 +14,13 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -41,7 +44,6 @@ public class UserAuthenticationProvider {
     public String createToken(User user) {
         Date now = new Date();
         Date validity = new Date(now.getTime() + expiration);
-        //Date validity = new Date(now.getTime() + 555); //1 hour
 
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
         return JWT.create()
@@ -50,7 +52,9 @@ public class UserAuthenticationProvider {
                 .withExpiresAt(validity)
                 .withClaim("firstName", user.getFirstName())
                 .withClaim("lastName", user.getLastName())
-                .withClaim("role", user.getUserRole())
+                .withClaim("userRole", String.valueOf(user.getUserRole()))
+                .withClaim("businessRole", user.getBusinessRole())
+                .withClaim("userRole", String.valueOf(user.getUserRole()))
                 .sign(algorithm);
     }
 
@@ -61,15 +65,16 @@ public class UserAuthenticationProvider {
                 .build();
 
         DecodedJWT decoded = verifier.verify(token);
-
         User user = User.builder()
                 .login(decoded.getSubject())
                 .firstName(decoded.getClaim("firstName").asString())
                 .lastName(decoded.getClaim("lastName").asString())
-                .userRole(decoded.getClaim("role").asString())
+                .middleName(decoded.getClaim("middleName").asString())
+                .userRole(Role.valueOf(decoded.getClaim("userRole").asString()))
+                .businessRole(decoded.getClaim("businessRole").asString())
                 .build();
-
-        return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+        System.out.println(user.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
     }
 
     public Authentication validateTokenStrongly(String token) {
@@ -82,7 +87,7 @@ public class UserAuthenticationProvider {
 
         User user = userService.findByLogin(decoded.getSubject());
 
-        return new UsernamePasswordAuthenticationToken(user, null, Collections.emptyList());
+        return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
     }
 
 }

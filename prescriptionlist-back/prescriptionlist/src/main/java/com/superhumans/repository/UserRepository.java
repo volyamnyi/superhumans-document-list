@@ -2,6 +2,7 @@ package com.superhumans.repository;
 
 
 import com.superhumans.exception.AppException;
+import com.superhumans.model.user.Role;
 import com.superhumans.model.user.User;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +42,8 @@ public class UserRepository {
                 user.setLastName(rs.getObject("lastName", String.class));
                 user.setLogin(rs.getObject("login", String.class));
                 user.setPassword(rs.getObject("password", String.class));
-                user.setUserRole(rs.getObject("role", String.class));
+                user.setUserRole(Role.valueOf(rs.getObject("user_role", String.class)));
+                user.setBusinessRole(rs.getObject("business_role", String.class));
 
                 return user;
             }
@@ -55,7 +57,7 @@ public class UserRepository {
 
     public User save(User user) {
         if(findByLogin(user.getLogin()).isEmpty()) {
-            String sql = "INSERT INTO SH_Users (firstName, lastName, login, password, role) VALUES (?,?,?,?,?);";
+            String sql = "INSERT INTO SH_Users (firstName, lastName, middleName, login, password, user_role, business_role) VALUES (?,?,?,?,?,?,?);";
             KeyHolder keyHolder = new GeneratedKeyHolder();
             System.out.println(user);
             String finalSql = sql;
@@ -64,9 +66,11 @@ public class UserRepository {
                         PreparedStatement ps = connection.prepareStatement(finalSql, Statement.RETURN_GENERATED_KEYS);
                         ps.setString(1, user.getFirstName());
                         ps.setString(2, user.getLastName());
-                        ps.setString(3, user.getLogin());
-                        ps.setString(4, user.getPassword());
-                        ps.setString(5, user.getUserRole());
+                        ps.setString(3, user.getMiddleName());
+                        ps.setString(4, user.getLogin());
+                        ps.setString(5, user.getPassword());
+                        ps.setString(6, String.valueOf(user.getUserRole()));
+                        ps.setString(7, user.getBusinessRole());
                         return ps;
                     },
                     keyHolder
