@@ -6,31 +6,30 @@ export const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
 
-    if (config.url === '/api/auth/login') {
+    if (config.url === "/api/auth/login") {
       return config;
     }
-    
+
     if (!token) {
-      window.location.href = '/login';
-      return Promise.reject(new Error('No token found'));
+      window.location.href = "/login";
+      return Promise.reject(new Error("No token found"));
     }
 
     if (isTokenExpired(token)) {
-      localStorage.removeItem('accessToken');
-      window.location.href = '/login';
-      return Promise.reject(new Error('Token expired'));
+      localStorage.removeItem("accessToken");
+      window.location.href = "/login";
+      return Promise.reject(new Error("Token expired"));
     }
     //config.headers.Authorization = `Bearer ${token}`;
     return config;
   },
   (error) => {
-    console.error('Request interceptor error:', error);
+    console.error("Request interceptor error:", error);
     return Promise.reject(error);
   }
 );
-
 
 export const getHeader = () => {
   const token = localStorage.getItem("accessToken");
@@ -109,31 +108,32 @@ export async function updateMedicineListById(medicineList) {
 
 export async function isDocumentEditing(listId) {
   try {
-    const response = await api.get(`/api/medicinelist/isDocumentEditing/${listId}`, {
-      headers: getHeader(),
-    });
+    const response = await api.get(
+      `/api/medicinelist/isDocumentEditing/${listId}`,
+      {
+        headers: getHeader(),
+      }
+    );
     return response.data;
   } catch (error) {
-    return error
+    return error;
   }
 }
 
 export async function updateMedicineListStatusByListId(id, status) {
-
-    try {
-      const response = await api.put(
-        `/api/medicinelist/${id}?status=${status}`,
-        {},
-        {
-          headers: getHeader(),
-        }
-      );
-      return response;
-    } catch (error) {
-      throw new Error(`Error updating medicine list status ${error.message}`);
-    }
- }
-
+  try {
+    const response = await api.put(
+      `/api/medicinelist/${id}?status=${status}`,
+      {},
+      {
+        headers: getHeader(),
+      }
+    );
+    return response;
+  } catch (error) {
+    throw new Error(`Error updating medicine list status ${error.message}`);
+  }
+}
 
 export async function searchPatients(keyword) {
   try {
@@ -146,6 +146,40 @@ export async function searchPatients(keyword) {
     return response.data;
   } catch (error) {
     throw new Error("Error fetching patients");
+  }
+}
+
+export async function updateUserById(user) {
+  try {
+    const response = await api.put(`/api/auth/admin`, user, {
+      headers: getHeader(),
+    });
+    return response;
+  } catch (error) {
+    throw new Error(`Error updating user${error.message}`);
+  }
+}
+
+export async function deleteUserById(userId) {
+  try {
+    const response = await api.delete(`/api/auth/admin/${userId}`, {
+      headers: getHeader(),
+    });
+    return response.data;
+  } catch (error) {
+    return error.message;
+  }
+}
+
+export async function getAllUsers() {
+  try {
+    const response = await api.get("/api/auth/admin", {
+      headers: getHeader(),
+    });
+
+    return response.data;
+  } catch (error) {
+    throw new Error(`Error fetching users ${error.message}`);
   }
 }
 
@@ -186,15 +220,12 @@ export async function userLogin(login) {
 
 export async function userRegister(registration) {
   try {
-    const response = await api.post("/api/auth/register", registration,{
+    const response = await api.post("/api/auth/admin/register", registration, {
       headers: getHeader(),
     });
+    
     return response.data;
   } catch (error) {
-    if (error.response && error.response.data) {
-      throw new Error(error.response.data);
-    } else {
       throw new Error(`User registration error : ${error.message}`);
-    }
   }
 }

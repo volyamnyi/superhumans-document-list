@@ -1,10 +1,10 @@
 package com.superhumans.model.medicinelist;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Getter
 @Setter

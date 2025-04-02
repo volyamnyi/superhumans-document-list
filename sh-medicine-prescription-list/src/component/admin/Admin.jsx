@@ -1,5 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { userRegister } from "../../utils/ApiFunctions";
+import { getAllUsers } from "../../utils/ApiFunctions";
+import { updateUserById } from "../../utils/ApiFunctions";
+import { deleteUserById } from "../../utils/ApiFunctions";
 
 export default function Admin() {
   const [users, setUsers] = useState([
@@ -29,6 +32,8 @@ export default function Admin() {
   });
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+
+  const [changeState, setChangeState] = useState(0)
 
   async function handleAddUser(e) {
     e.preventDefault();
@@ -71,16 +76,27 @@ export default function Admin() {
       userRole: "",
     });
     setModalOpen(false);
+    setChangeState(prevValue=>prevValue+1)
   }
 
-  const handleEditUser = () => {
-    setUsers(users.map((u) => (u.id === editUser.id ? editUser : u)));
+  async function handleEditUser(e)  {
+    e.preventDefault();
+    //setUsers(users.map((u) => (u.id === editUser.id ? editUser : u)));
+    //console.log(editUser)
+    updateUserById(editUser)
     setEditUser(null);
     setModalOpen(false);
+    
+    setChangeState(prevValue=>prevValue+1)
   };
 
-  const handleDeleteUser = (id) => {
-    setUsers(users.filter((u) => u.id !== id));
+  const handleDeleteUser = (e,id) => {
+    e.preventDefault();
+    //setUsers(users.filter((u) => u.id !== id));
+    deleteUserById(id)
+    
+    setChangeState(prevValue=>prevValue+1)
+
   };
 
   const [showPassword, setShowPassword] = useState(false);
@@ -88,6 +104,20 @@ export default function Admin() {
   const handleToggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const result = await getAllUsers();
+        setUsers(result); 
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, [changeState]);
+
 
   return (
     <>
@@ -124,7 +154,7 @@ export default function Admin() {
           }
           .btn-add { background: #28a745 !important; color: white; }
           .btn-edit { background: #ffc107 !important; color: black; }
-          .btn-delete { background: #dc3545; color: white; }
+          .btn-delete { background: #dc3545 !important; color: white; }
           .modal {
             position: fixed;
             top: 50%;
@@ -205,7 +235,8 @@ export default function Admin() {
                     </button>
                     <button
                       className="btn btn-delete"
-                      onClick={() => handleDeleteUser(user.id)}
+                      type="button"
+                      onClick={(e) => handleDeleteUser(e,user.id)}
                     >
                       Видалити
                     </button>
@@ -262,6 +293,7 @@ export default function Admin() {
           <input
             type={showPassword ? "text" : "password"}
             placeholder="Пароль"
+            name="password"
             value={editUser ? editUser.password : newUser.password}
             onChange={(e) => {
               if (editUser)
@@ -317,12 +349,14 @@ export default function Admin() {
           </div>
           <div className="modal-buttons">
             <button
+              type="button"
               className="btn btn-add"
               onClick={editUser ? (e)=>handleEditUser(e) : (e)=>handleAddUser(e)}
             >
               {editUser ? "Зберегти" : "Додати"}
             </button>
             <button
+                type="button"
               className="btn btn-delete"
               onClick={() => {
                 setModalOpen(false);

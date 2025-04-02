@@ -15,7 +15,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
-
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,7 +36,7 @@ public class UserRepository {
             @Override
             public User mapRow(ResultSet rs, int rowNum) {
                 User user = new User();
-                user.setId(rs.getObject("SH_UserId", Long.class));
+                user.setId(rs.getObject("SH_UserId", Integer.class));
                 user.setFirstName(rs.getObject("firstName", String.class));
                 user.setLastName(rs.getObject("lastName", String.class));
                 user.setLogin(rs.getObject("login", String.class));
@@ -56,10 +55,9 @@ public class UserRepository {
     }
 
     public User save(User user) {
-        if(findByLogin(user.getLogin()).isEmpty()) {
+        if (findByLogin(user.getLogin()).isEmpty()) {
             String sql = "INSERT INTO SH_Users (firstName, lastName, middleName, login, password, user_role, business_role) VALUES (?,?,?,?,?,?,?);";
             KeyHolder keyHolder = new GeneratedKeyHolder();
-            System.out.println(user);
             String finalSql = sql;
             jdbcTemplate.update(
                     connection -> {
@@ -76,12 +74,56 @@ public class UserRepository {
                     keyHolder
             );
 
-            Integer medicineListId = ((BigDecimal) keyHolder.getKeyList().get(keyHolder.getKeyList().size() - 1).get("GENERATED_KEYS")).intValue();
+            Integer userId = ((BigDecimal) keyHolder.getKeyList().get(keyHolder.getKeyList().size() - 1).get("GENERATED_KEYS")).intValue();
 
             return findByLogin(user.getLogin()).orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
         }
 
         throw new AppException("User is already registered", HttpStatus.NOT_FOUND);
+    }
+
+    public List<User> getAllUsers() {
+        RowMapper<User> mapper = new RowMapper() {
+
+            @Override
+            @SneakyThrows
+            public User mapRow(ResultSet rs, int rowNum) {
+                User user = new User();
+                user.setId(rs.getObject("SH_UserId", Integer.class));
+                user.setFirstName(rs.getObject("firstName", String.class));
+                user.setLastName(rs.getObject("lastName", String.class));
+                user.setMiddleName(rs.getObject("middleName", String.class));
+                user.setLogin(rs.getObject("login", String.class));
+                user.setBusinessRole(rs.getObject("business_role", String.class));
+                user.setUserRole(Role.valueOf(rs.getObject("user_role", String.class)));
+                return user;
+            }
+        };
+        return jdbcTemplate.query("SELECT * FROM SH_Users", mapper);
+    }
+
+
+    public User updateUserById(User user) {
+        System.out.println(user);
+        String sql = "UPDATE SH_Users SET firstName = ?,lastName = ?,middleName = ?,login = ?,password = ?,business_role = ?,user_role = ? WHERE SH_UserId = ?;";
+        jdbcTemplate.update(
+                sql,
+                user.getFirstName(),
+                user.getLastName(),
+                user.getMiddleName(),
+                user.getLogin(),
+                user.getPassword(),
+                user.getBusinessRole(),
+                user.getUserRole().toString(),
+                user.getId()
+        );
+
+    return findByLogin(user.getLogin()).orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
+    }
+
+    public void deleteUserById(Integer id) {
+        String sql = "DELETE FROM SH_Users WHERE SH_UserId = ?";
+        jdbcTemplate.update(sql, id);
     }
 
 }

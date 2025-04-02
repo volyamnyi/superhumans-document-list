@@ -14,7 +14,7 @@ import java.util.Collection;
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class User implements UserDetails {
-    private Long id;
+    private Integer id;
 
     @Size(max = 100)
     private String firstName;
@@ -46,6 +46,5 @@ public class User implements UserDetails {
     public String getUsername() {
         return login;
     }
-
 
 }

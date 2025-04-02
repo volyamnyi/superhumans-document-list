@@ -11,8 +11,7 @@ import Registration from "./component/auth/Registration";
 import Login from "./component/auth/Login";
 import Admin from "./component/admin/Admin";
 import RequireAuth from "./component/auth/RequireAuth";
-import _404 from "./component/auth/_403";
-
+import _403 from "./component/auth/_403";
 
 function App() {
   const auth = React.useContext(AuthContext);
@@ -26,7 +25,7 @@ function App() {
   };
 
   return (
-    <> 
+    <>
       <Main>
         {isLoggedIn && (
           <a className="dropdown-item" href="#" onClick={handleLogout}>
@@ -37,10 +36,19 @@ function App() {
           <Route index element={!isLoggedIn ? <Login /> : <Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Registration />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route
+            path="/admin"
+            element={
+              localStorage.getItem("userRole") === "ADMIN" ? (
+                <Admin />
+              ) : (
+                <_403 />
+              )
+            }
+          />
 
           <Route path="*" element={<Navigate to="/forbidden" />} />
-          <Route path="/forbidden" element={<_404 />} />
+          <Route path="/forbidden" element={<_403 />} />
           <Route
             path="/"
             element={

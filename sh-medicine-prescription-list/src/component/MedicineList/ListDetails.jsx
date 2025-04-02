@@ -1,4 +1,4 @@
-import React from "react";
+import {React, useEffect, useState} from "react";
 import { getMedicineListById } from "../../utils/ApiFunctions";
 import { updateMedicineListById } from "../../utils/ApiFunctions";
 import { updateMedicineListStatusByListId } from "../../utils/ApiFunctions";
@@ -30,17 +30,17 @@ import { handleCurrentRowClick } from "../../utils/Functions";
 import List from "./List";
 
 import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+
 
 export default function ListDetails(props) {
   const { Id } = props;
   const id = Id ? Id : useParams().id;
   const isScaled = Id ? true : false;
 
-  const [ROLE, setROLE] = React.useState(localStorage.getItem("businessRole"));
-  const [errorMessage, setErrorMessage] = React.useState("");
+  const [ROLE, setROLE] = useState(localStorage.getItem("businessRole"));
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const [medicineList, setMedicineList] = React.useState({
+  const [medicineList, setMedicineList] = useState({
     medicineListID: null,
     patientRef: null,
     documentName: "",
@@ -51,21 +51,21 @@ export default function ListDetails(props) {
     medicineDetails: [],
   });
 
-  const [medicineDetails, setMedicineListItem] = React.useState([]);
-  const [triggerSubmit, setTriggerSubmit] = React.useState(false);
-  const [dates, setDates] = React.useState([]);
+  const [medicineDetails, setMedicineListItem] = useState([]);
+  const [triggerSubmit, setTriggerSubmit] = useState(false);
+  const [dates, setDates] = useState([]);
 
-  const [showSuggestions, setShowSuggestions] = React.useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [currentRowSuggestionIndex, setCurrentRowSuggestionIndex] =
-    React.useState();
-  const [medicineName, setMedicineName] = React.useState("");
+    useState();
+  const [medicineName, setMedicineName] = useState("");
   const [triggerSearchedMedicine, setTriggerSearchedMedicine] =
-    React.useState(false);
-  const [searchedMedicine, setSearchedMedicine] = React.useState([
+    useState(false);
+  const [searchedMedicine, setSearchedMedicine] = useState([
     { id: "", name: "" },
   ]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     getMedicineListById(id.split("|")[0]).then((list) => {
       setMedicineList(list);
       setMedicineListItem(medicineList.medicineDetails);
@@ -73,7 +73,7 @@ export default function ListDetails(props) {
     });
   }, [medicineList.medicineListID]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (triggerSubmit) {
       (async () => {
         const response = await updateMedicineListById(medicineList);
@@ -87,7 +87,7 @@ export default function ListDetails(props) {
     }
   }, [medicineList, triggerSubmit]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (triggerSearchedMedicine) {
       (async () => {
         if (!isEmpty(medicineName)) {
@@ -103,14 +103,14 @@ export default function ListDetails(props) {
     }
   }, [medicineName]);
 
-  const [renderCount, setRenderCount] = React.useState(0);
-  React.useEffect(() => {
+  const [renderCount, setRenderCount] = useState(0);
+  useEffect(() => {
     if (renderCount < 1) {
       setRenderCount((prevCount) => prevCount + 1);
     }
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     !isScaled &&
       updateMedicineListStatusByListId(
         id.split("|")[0],
@@ -142,7 +142,7 @@ export default function ListDetails(props) {
     };
   }, [renderCount]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handlePopState = () => {
       updateMedicineListStatusByListId(id.split("|")[0], "Saved");
     };
@@ -154,7 +154,7 @@ export default function ListDetails(props) {
     };
   }, [id.split("|")[0]]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleBeforeUnload = () => {
       updateMedicineListStatusByListId(id.split("|")[0], "Saved");
     };

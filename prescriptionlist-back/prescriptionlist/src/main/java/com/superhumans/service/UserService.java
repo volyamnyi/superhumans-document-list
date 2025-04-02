@@ -1,64 +1,21 @@
 package com.superhumans.service;
 
-import com.superhumans.exception.AppException;
 import com.superhumans.model.user.Credentials;
-import com.superhumans.model.user.Role;
 import com.superhumans.model.user.SignUp;
 import com.superhumans.model.user.User;
-import com.superhumans.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.nio.CharBuffer;
-import java.util.Optional;
+import java.util.List;
 
-@RequiredArgsConstructor
 @Service
-public class UserService {
+public interface UserService {
+    User login(Credentials credentials);
 
-    private final UserRepository userRepository;
+    User register(SignUp user);
 
-    private final PasswordEncoder passwordEncoder;
+    List<User> getAllUsers();
 
-    //private final UserMapper userMapper;
+    User updateUserById(SignUp userDto);
 
-    public User login(Credentials credentials) {
-        User user = userRepository.findByLogin(credentials.login())
-                .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
-
-        if (passwordEncoder.matches(CharBuffer.wrap(credentials.password()), user.getPassword())) {
-            return user;
-        }
-        throw new AppException("Invalid password", HttpStatus.BAD_REQUEST);
-    }
-
-    public User register(SignUp userDto) {
-        Optional<User> optionalUser = userRepository.findByLogin(userDto.login());
-
-        if (optionalUser.isPresent()) {
-            throw new AppException("Login already exists", HttpStatus.BAD_REQUEST);
-        }
-
-        User user = new User();
-        user.setFirstName(userDto.firstName());
-        user.setLastName(userDto.lastName());
-        user.setMiddleName(userDto.middleName());
-        user.setLogin(userDto.login());
-        user.setBusinessRole(userDto.businessRole());
-        user.setUserRole(Role.valueOf(userDto.userRole()));
-        user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDto.password())));
-
-        User savedUser = userRepository.save(user);
-
-        return savedUser;
-    }
-
-    public User findByLogin(String login) {
-        User user = userRepository.findByLogin(login)
-                .orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
-        return user;
-    }
-
+    void deleteUserById(Integer id);
 }

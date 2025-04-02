@@ -6,7 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.superhumans.model.user.Role;
 import com.superhumans.model.user.User;
-import com.superhumans.service.UserService;
+import com.superhumans.service.impl.UserServiceImpl;
 import jakarta.annotation.PostConstruct;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +14,10 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.Base64;
-import java.util.Collections;
 import java.util.Date;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Component
@@ -33,7 +30,7 @@ public class UserAuthenticationProvider {
     @Value("${security.jwt.expiration}")
     Integer expiration;
 
-    final UserService userService;
+    final UserServiceImpl userService;
 
     @PostConstruct
     protected void init() {
@@ -73,7 +70,6 @@ public class UserAuthenticationProvider {
                 .userRole(Role.valueOf(decoded.getClaim("userRole").asString()))
                 .businessRole(decoded.getClaim("businessRole").asString())
                 .build();
-        System.out.println(user.getAuthorities());
         return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
     }
 
