@@ -20,7 +20,7 @@ import { useParams } from "react-router-dom";
 export default function NewList() {
   const { id } = useParams();
   
-  const ROLE = localStorage.getItem("role");
+  const ROLE = localStorage.getItem("businessRole");
   
   const [medicineList, setMedicineList] = React.useState({
     medicineListID: 0,

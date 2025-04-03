@@ -1,4 +1,4 @@
-import React from "react";
+import {React, useEffect}  from "react";
 import { getPatientById } from "../../utils/ApiFunctions";
 import { Link } from "react-router-dom";
 
@@ -18,7 +18,7 @@ export default function DocumentHeader(props) {
     doctor: "",
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     getPatientById(props.id).then((patient) => setPatient(patient));
   }, []);
 

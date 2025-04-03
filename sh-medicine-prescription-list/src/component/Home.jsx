@@ -12,7 +12,7 @@ import ListDetails from "./MedicineList/ListDetails";
 export default function Home() {
   const { id } = useParams();
   const [patientStateId, setPatientStateId] = React.useState(id);
-  const ROLE = localStorage.getItem("role");
+  const ROLE = localStorage.getItem("businessRole");
 
   const [documentsList, setDocumentsLList] = React.useState([
     {
@@ -218,6 +218,7 @@ export default function Home() {
                       >*/
                       <a
                         href="#"
+                        key={i}
                         onClick={() => {
                           handleSelectDocument(
                             document.medicineListID + "|" + document.patientRef,
