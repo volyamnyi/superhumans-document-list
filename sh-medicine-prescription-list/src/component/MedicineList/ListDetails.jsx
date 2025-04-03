@@ -51,6 +51,8 @@ export default function ListDetails(props) {
     medicineDetails: [],
   });
 
+  console.log(ROLE)
+
   const [medicineDetails, setMedicineListItem] = useState([]);
   const [triggerSubmit, setTriggerSubmit] = useState(false);
   const [dates, setDates] = useState([]);
