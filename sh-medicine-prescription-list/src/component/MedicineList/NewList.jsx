@@ -1,27 +1,32 @@
 import React from "react";
-
-import { addNewMedicineList } from "../../utils/ApiFunctions";
-import { handleItemChange } from "../../utils/Functions";
-import { handleDetailChange } from "../../utils/Functions";
-import { handleAddNewMedicineItem } from "../../utils/Functions";
-import { handleAddNewDayDetails } from "../../utils/Functions";
-import { handleMedicineMethodChange } from "../../utils/Functions";
-import { handleSubmit } from "../../utils/Functions";
-import { getWeekDates } from "../../utils/Functions";
 import DocumentHeader from "./DocumentHeader";
-import { isEmpty } from "../../utils/Functions";
-import { searchMedicine } from "../../utils/ApiFunctions";
-import { handleCurrentRowClick } from "../../utils/Functions";
-import { handleSearchedMedicineClick } from "../../utils/Functions";
 import List from "./List";
+
+import {
+  addNewMedicineList,
+  searchMedicine,
+} from "../../utils/ApiFunctions";
+
+import {
+  handleItemChange,
+  handleDetailChange,
+  handleAddNewMedicineItem,
+  handleAddNewDayDetails,
+  handleMedicineMethodChange,
+  handleCurrentRowClick,
+  handleSearchedMedicineClick,
+  handleSubmit,
+  getWeekDates,
+  isEmpty
+} from "../../utils/Functions";
 
 import { useParams } from "react-router-dom";
 
 export default function NewList() {
   const { id } = useParams();
-  
+
   const ROLE = localStorage.getItem("businessRole");
-  
+
   const [medicineList, setMedicineList] = React.useState({
     medicineListID: 0,
     patientRef: id,

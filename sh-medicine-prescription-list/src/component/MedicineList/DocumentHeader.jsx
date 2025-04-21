@@ -1,6 +1,6 @@
-import {React, useEffect, useState}  from "react";
-import { getPatientById } from "../../utils/ApiFunctions";
+import { React, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { getPatientById } from "../../utils/ApiFunctions";
 
 export default function DocumentHeader(props) {
   const [patient, setPatient] = useState({

@@ -1,35 +1,32 @@
-import {React, useEffect, useState} from "react";
-import { getMedicineListById } from "../../utils/ApiFunctions";
-import { updateMedicineListById } from "../../utils/ApiFunctions";
-import { updateMedicineListStatusByListId } from "../../utils/ApiFunctions";
-import { isDocumentEditing } from "../../utils/ApiFunctions";
-
-import { handleItemChange } from "../../utils/Functions";
-
-import { handleDetailChange } from "../../utils/Functions";
-
-import { handleAddNewMedicineItem } from "../../utils/Functions";
-import { handleRemoveMedicineItem } from "../../utils/Functions";
-
-import { handleAddNewDayDetails } from "../../utils/Functions";
-import { handleDelNewDayDetails } from "../../utils/Functions";
-
-import { handleMedicineMethodChange } from "../../utils/Functions";
-
-import { isEmpty } from "../../utils/Functions";
-import { handleSubmit } from "../../utils/Functions";
-
-import { getWeekDates } from "../../utils/Functions";
-import { formatDate } from "../../utils/Functions";
-import { searchMedicine } from "../../utils/ApiFunctions";
+import { React, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import DocumentHeader from "./DocumentHeader";
-
-import { handleSearchedMedicineClick } from "../../utils/Functions";
-import { handleCurrentRowClick } from "../../utils/Functions";
-
 import List from "./List";
 
-import { useParams } from "react-router-dom";
+import {
+  getMedicineListById,
+  updateMedicineListById,
+  updateMedicineListStatusByListId,
+  isDocumentEditing,
+  searchMedicine
+} from "../../utils/ApiFunctions";
+
+import {
+  handleItemChange,
+  handleDetailChange,
+  handleAddNewMedicineItem,
+  handleRemoveMedicineItem,
+  handleAddNewDayDetails,
+  handleDelNewDayDetails, 
+  handleMedicineMethodChange,
+  isEmpty,
+  handleSubmit,
+  getWeekDates,
+  formatDate,
+  handleSearchedMedicineClick,
+  handleCurrentRowClick
+} from "../../utils/Functions";
+
 
 
 export default function ListDetails(props) {
@@ -51,18 +48,14 @@ export default function ListDetails(props) {
     medicineDetails: [],
   });
 
-  console.log(ROLE)
-
   const [medicineDetails, setMedicineListItem] = useState([]);
   const [triggerSubmit, setTriggerSubmit] = useState(false);
   const [dates, setDates] = useState([]);
 
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [currentRowSuggestionIndex, setCurrentRowSuggestionIndex] =
-    useState();
+  const [currentRowSuggestionIndex, setCurrentRowSuggestionIndex] = useState();
   const [medicineName, setMedicineName] = useState("");
-  const [triggerSearchedMedicine, setTriggerSearchedMedicine] =
-    useState(false);
+  const [triggerSearchedMedicine, setTriggerSearchedMedicine] = useState(false);
   const [searchedMedicine, setSearchedMedicine] = useState([
     { id: "", name: "" },
   ]);
@@ -170,7 +163,7 @@ export default function ListDetails(props) {
 
   return (
     <>
-    {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
+      {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       {!isScaled && <DocumentHeader id={id.split("|")[1]} />}
       <List
         handleItemChange={handleItemChange}

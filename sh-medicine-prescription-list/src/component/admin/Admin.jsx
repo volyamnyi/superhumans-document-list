@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { userRegister } from "../../utils/ApiFunctions";
-import { getAllUsers } from "../../utils/ApiFunctions";
-import { updateUserById } from "../../utils/ApiFunctions";
-import { deleteUserById } from "../../utils/ApiFunctions";
+import { userRegister,getAllUsers, updateUserById, deleteUserById } from "../../utils/ApiFunctions";
 
 export default function Admin() {
   const [users, setUsers] = useState([
