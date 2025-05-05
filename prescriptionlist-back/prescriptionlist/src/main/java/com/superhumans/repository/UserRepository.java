@@ -22,13 +22,26 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Репозиторій для управління користувачами у базі даних.
+ * Надає методи для пошуку, створення, оновлення та видалення користувачів.
+ */
 @Repository
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserRepository {
 
+    /**
+     * Компонент для виконання SQL-запитів до бази даних.
+     */
     JdbcTemplate jdbcTemplate;
 
+    /**
+     * Шукає користувача за логіном.
+     *
+     * @param login логін користувача
+     * @return об'єкт Optional, який містить знайденого користувача або порожній, якщо користувача не знайдено
+     */
     public Optional<User> findByLogin(String login) {
         RowMapper<User> mapper = new RowMapper() {
 
@@ -54,6 +67,14 @@ public class UserRepository {
         return result.isEmpty() ? Optional.empty() : Optional.of(result.get(0));
     }
 
+    /**
+     * Зберігає нового користувача у базі даних.
+     * Якщо користувач з таким логіном вже існує — кидає виняток.
+     *
+     * @param user користувач, якого потрібно зберегти
+     * @return збережений користувач
+     * @throws AppException якщо користувач з таким логіном вже існує або не вдалося знайти збереженого користувача
+     */
     public User save(User user) {
         if (findByLogin(user.getLogin()).isEmpty()) {
             String sql = "INSERT INTO SH_Users (firstName, lastName, middleName, login, password, user_role, business_role) VALUES (?,?,?,?,?,?,?);";
@@ -82,6 +103,11 @@ public class UserRepository {
         throw new AppException("User is already registered", HttpStatus.NOT_FOUND);
     }
 
+    /**
+     * Отримує список усіх користувачів з бази даних.
+     *
+     * @return список користувачів
+     */
     public List<User> getAllUsers() {
         RowMapper<User> mapper = new RowMapper() {
 
@@ -102,7 +128,13 @@ public class UserRepository {
         return jdbcTemplate.query("SELECT * FROM SH_Users", mapper);
     }
 
-
+    /**
+     * Оновлює дані користувача за його ідентифікатором.
+     *
+     * @param user об'єкт користувача з оновленими даними
+     * @return оновлений користувач
+     * @throws AppException якщо користувача не знайдено після оновлення
+     */
     public User updateUserById(User user) {
         System.out.println(user);
         String sql = "UPDATE SH_Users SET firstName = ?,lastName = ?,middleName = ?,login = ?,password = ?,business_role = ?,user_role = ? WHERE SH_UserId = ?;";
@@ -121,6 +153,11 @@ public class UserRepository {
     return findByLogin(user.getLogin()).orElseThrow(() -> new AppException("Unknown user", HttpStatus.NOT_FOUND));
     }
 
+    /**
+     * Видаляє користувача з бази даних за його ідентифікатором.
+     *
+     * @param id ідентифікатор користувача
+     */
     public void deleteUserById(Integer id) {
         String sql = "DELETE FROM SH_Users WHERE SH_UserId = ?";
         jdbcTemplate.update(sql, id);

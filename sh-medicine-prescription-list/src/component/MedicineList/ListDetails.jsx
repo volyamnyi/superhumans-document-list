@@ -197,11 +197,6 @@ export default function ListDetails(props) {
         searchedMedicine={searchedMedicine}
         isScaled={isScaled}
       />
-      {/*isScaled && <Link
-                        to={`/listdetails/${
-                          Id
-                        }`}
-                      >Перегляд</Link>*/}
     </>
   );
 }

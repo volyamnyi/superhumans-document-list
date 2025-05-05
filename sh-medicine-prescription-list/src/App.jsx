@@ -4,6 +4,7 @@ import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import Home from "./component/Home";
 import Main from "./component/Main";
 import ListDetails from "./component/MedicineList/ListDetails";
+import PatientDetails from "./component/MedicineList/PatientDetails";
 import NewList from "./component/MedicineList/NewList";
 import { AuthContext } from "./component/auth/AuthProvider";
 import Registration from "./component/auth/Registration";
@@ -69,6 +70,14 @@ function App() {
             element={
               <RequireAuth>
                 <ListDetails />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path="/patientdetails/:id"
+            element={
+              <RequireAuth>
+                <PatientDetails />
               </RequireAuth>
             }
           />

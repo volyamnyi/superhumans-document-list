@@ -373,7 +373,7 @@ export function getWeekDates(date) {
     today = new Date();
   }
 
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 21; i++) {
     let nextDate = new Date(today);
     nextDate.setDate(today.getDate() + i);
     dates.push(nextDate.toISOString().split("T")[0]);

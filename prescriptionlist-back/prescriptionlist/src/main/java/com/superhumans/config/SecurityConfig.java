@@ -16,6 +16,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import static com.superhumans.model.user.Permission.*;
 import static org.springframework.http.HttpMethod.*;
 
+/**
+ * Конфігураційний клас для налаштування безпеки Spring Security.
+ *
+ * Визначає правила авторизації, додає фільтр JWT, вимикає CSRF, встановлює політику сесії та обробник помилок автентифікації.
+ */
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
@@ -25,6 +30,13 @@ public class SecurityConfig {
     UserAuthenticationEntryPoint userAuthenticationEntryPoint;
     UserAuthenticationProvider userAuthenticationProvider;
 
+    /**
+     * Налаштовує фільтри безпеки, політику сесій, CSRF, дозволи на шляхи та обробку помилок.
+     *
+     * @param http об'єкт HttpSecurity для конфігурації безпеки
+     * @return SecurityFilterChain - конфігурований ланцюг безпеки
+     * @throws Exception у разі помилок конфігурації
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http

@@ -237,6 +237,20 @@ export async function searchPatients(keyword) {
   }
 }
 
+export async function getAllInpatients() {
+  try {
+    const response = await api.get(
+      `/api/medicinelist/patient`,
+      {
+        headers: getHeader(),
+      }
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error("Error fetching patients");
+  }
+}
+
 /**
  * Оновити дані користувача за його ID.
  * 

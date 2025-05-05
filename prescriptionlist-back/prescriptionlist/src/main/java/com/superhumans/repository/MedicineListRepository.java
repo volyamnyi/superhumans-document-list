@@ -30,25 +30,34 @@ import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Репозиторій для роботи з медичними списками у базі даних.
+ * Це клас, який надає методи для створення, оновлення, пошуку та видалення медичних списків.
+ */
 @Repository
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class MedicineListRepository {
 
+    /**
+     * Об'єкт для роботи з базою даних через JDBC.
+     */
     JdbcTemplate jdbcTemplate;
+
+    /**
+     * Об'єкт для серіалізації та десеріалізації JSON.
+     */
     ObjectMapper objectMapper;
 
-
+    /**
+     * Створює новий медичний список у базі даних.
+     *
+     * @param medicineList Об'єкт медичного списку.
+     * @param json         Строка JSON, що містить деталі медичного списку.
+     */
     public void createNewMedicineList(MedicineList medicineList, String json) {
         String sql = "INSERT INTO MedicineList (PatientRef, MedicineListCreationUser, MedicineListCreationDate, DocumentName) VALUES (?,?,?,?);";
 
-//         jdbcTemplate.update(
-//                sql,
-//                medicineList.getPatientRef(),
-//                medicineList.getMedicineListCreationUser(),
-//                medicineList.getMedicineListCreationDate()
-//        );
-//        Integer medicineListId = jdbcTemplate.queryForObject("SELECT SCOPE_IDENTITY()",Integer.class);
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         String finalSql = sql;
@@ -78,6 +87,11 @@ public class MedicineListRepository {
         );
     }
 
+    /**
+     * Отримує всі медичні списки з бази даних.
+     *
+     * @return Список усіх медичних списків.
+     */
     public List<MedicineList> getAllMedicineLists() {
         RowMapper<MedicineList> mapper = new RowMapper() {
 
@@ -96,6 +110,12 @@ public class MedicineListRepository {
         return jdbcTemplate.query("SELECT MedicineListId, PatientRef, DocumentName, MedicineListCreationUser, MedicineListCreationDate FROM MedicineList", mapper);
     }
 
+    /**
+     * Отримує медичний список за його ідентифікатором.
+     *
+     * @param id Ідентифікатор медичного списку.
+     * @return Об'єкт медичного списку.
+     */
     public MedicineList getMedicineListById(Integer id) {
         RowMapper<MedicineList> mapper = new RowMapper() {
 
@@ -118,12 +138,18 @@ public class MedicineListRepository {
                 return medicalList;
             }
         };
-        //List<MedicineList> result = jdbcTemplate.query("SELECT * FROM MedicineList ml LEFT JOIN MedicineListItem mli ON ml.MedicineListID = mli.MedicineListRef WHERE ml.MedicineListID=" + id + ";", mapper);
+
         List<MedicineList> result = jdbcTemplate.query("SELECT * FROM MedicineList ml LEFT JOIN MedicineListItem mli ON ml.MedicineListID = mli.MedicineListRef WHERE ml.MedicineListID = ?;", mapper, id);
 
         return result.get(0);
     }
 
+    /**
+     * Оновлює медичний список за його ідентифікатором.
+     *
+     * @param medicineList Об'єкт медичного списку для оновлення.
+     * @param json         Строка JSON, що містить оновлені деталі медичного списку.
+     */
     public void updateMedicineListById(MedicineList medicineList, String json) {
 
         RowMapper<MedicineDetails> mapper = new RowMapper() {
@@ -153,6 +179,12 @@ public class MedicineListRepository {
         }
     }
 
+    /**
+     * Перевіряє, чи редагується медичний список іншими користувачами.
+     *
+     * @param id Ідентифікатор медичного списку.
+     * @return true, якщо документ редагується, інакше false.
+     */
     public Boolean isDocumentEditing(Integer id) {
         RowMapper<MedicineDetails> mapper = new RowMapper() {
 
@@ -175,6 +207,12 @@ public class MedicineListRepository {
         return false;
     }
 
+    /**
+     * Оновлює статус медичного списку за його ідентифікатором.
+     *
+     * @param id     Ідентифікатор медичного списку.
+     * @param status Новий статус медичного списку.
+     */
     public void updateMedicineListStatusByListId(Integer id, String status) {
         System.out.println("Updating status by id..." + status);
         RowMapper<MedicineDetails> mapper = new RowMapper() {
@@ -200,11 +238,22 @@ public class MedicineListRepository {
 
     }
 
+    /**
+     * Отримує ім'я користувача з JWT токену.
+     *
+     * @param token JWT токен.
+     * @return Ім'я користувача.
+     */
     public static String getUsernameFromJwt(String token) {
         DecodedJWT decodedJWT = JWT.decode(token);
         return decodedJWT.getSubject(); // Typically, "sub" claim holds the username
     }
 
+    /**
+     * Отримує поточного користувача з контексту безпеки.
+     *
+     * @return Логін поточного користувача.
+     */
     public static String getCurrentLogin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof User) {
@@ -214,6 +263,12 @@ public class MedicineListRepository {
         return null; // Return null or throw an exception if the user is not authenticated
     }
 
+    /**
+     * Шукає пацієнтів за ключовим словом.
+     *
+     * @param keyword Ключове слово для пошуку.
+     * @return Список пацієнтів, що відповідають пошуковому запиту.
+     */
     public List<Patient> searchPatients(String keyword) {
         RowMapper<Patient> mapper = new RowMapper() {
 
@@ -226,12 +281,61 @@ public class MedicineListRepository {
                 return patient;
             }
         };
-        //return jdbcTemplate.query("SELECT PatientID, PatientName FROM Patient WHERE PatientName LIKE N'%" + keyword + "%'", mapper);
+
         String sql = "SELECT PatientID, PatientName FROM Patient WHERE PatientName LIKE ?";
         String query = "%" + keyword + "%";
         return jdbcTemplate.query(sql, mapper, query);
     }
 
+    public List<Patient> getAllInpatients() {
+
+        RowMapper<Patient> mapper = new RowMapper() {
+
+            @Override
+            @SneakyThrows
+            public Patient mapRow(ResultSet rs, int rowNum) {
+                Patient patient = new Patient();
+                patient.setId(rs.getObject("PatientID", Integer.class));
+                patient.setName(rs.getObject("PatientName", String.class));
+                patient.setHistoryNumber(rs.getObject("PatientHistoryNumber", String.class));
+                patient.setAddress(rs.getObject("PatientAddress", String.class));
+                patient.setPhone(rs.getObject("PatientPhone", String.class));
+                patient.setDepartment(rs.getObject("VenueLevel2", String.class));
+                patient.setRoomNumber(rs.getObject("VenueLevel1", String.class));
+                patient.setBedNumber(rs.getObject("VenueLevel0", String.class));
+                patient.setDoctor(rs.getObject("Doctor", String.class));
+                patient.setGender(rs.getObject("PatientSexRef", String.class));
+                patient.setAge(rs.getObject("Age", String.class));
+                patient.setBirthDate(rs.getObject("PatientBirthDate", String.class));
+
+                return patient;
+            }
+        };
+
+        return jdbcTemplate.query(
+                "Select PatientID, PatientName," +
+                        "PatientHistoryNumber," +
+                        "PatientAddress," +
+                        "PatientPhone," +
+                        "v2.VenueName AS VenueLevel2," +
+                        "v1.VenueName AS VenueLevel1," +
+                        "v.VenueName AS VenueLevel0," +
+                        "PatientSexRef," +
+                        "DATEDIFF(YEAR, PatientBirthDate, GETDATE()) as Age, PatientBirthDate, u.UserName AS Doctor  from Patient " +
+                        "left join Residence r on PatientRef = PatientID and ResidenceStatusRef = N'PRG'" +
+                        "left join venue v on r.VenueRef = v.VenueID " +
+                        "left join venue v1 on v.VenueParentRef = v1.VenueID " +
+                        "left join venue v2 on v1.VenueParentRef = v2.VenueID " +
+                        "left join Users u on u.UserLogin = r.UserRef " +
+                        "where ResidenceSequence1Ref in (19);", mapper);
+    }
+
+    /**
+     * Отримує пацієнта за його ідентифікатором.
+     *
+     * @param id Ідентифікатор пацієнта.
+     * @return Об'єкт пацієнта.
+     */
     public Patient getPatientById(Integer id) {
         RowMapper<Patient> mapper = new RowMapper() {
 
@@ -255,6 +359,7 @@ public class MedicineListRepository {
                 return patient;
             }
         };
+
         List<Patient> result = jdbcTemplate.query(
                 "Select PatientID, PatientName," +
                         "PatientHistoryNumber," +
@@ -270,12 +375,17 @@ public class MedicineListRepository {
                         "left join venue v1 on v.VenueParentRef = v1.VenueID " +
                         "left join venue v2 on v1.VenueParentRef = v2.VenueID " +
                         "left join Users u on u.UserLogin = r.UserRef " +
-                        //"where PatientID = " + id + ";", mapper);
                         "where PatientID = ?;", mapper, id);
-        //System.out.println(result);
+
         return result.get(0);
     }
 
+    /**
+     * Отримує всі медичні списки для конкретного пацієнта за його ідентифікатором.
+     *
+     * @param id Ідентифікатор пацієнта.
+     * @return Список медичних списків для пацієнта.
+     */
     public List<MedicineList> getAllDocumentsByPatientId(Integer id) {
         RowMapper<MedicineList> mapper = new RowMapper() {
 
@@ -291,10 +401,16 @@ public class MedicineListRepository {
                 return medicalList;
             }
         };
-        //return jdbcTemplate.query("SELECT MedicineListId, PatientRef, DocumentName, MedicineListCreationUser, MedicineListCreationDate FROM MedicineList WHERE PatientRef = "+id+";", mapper);
+
         return jdbcTemplate.query("SELECT MedicineListId, PatientRef, DocumentName, MedicineListCreationUser, MedicineListCreationDate FROM MedicineList WHERE PatientRef = ?", mapper, id);
     }
 
+    /**
+     * Шукає медикаменти за ключовим словом.
+     *
+     * @param keyword Ключове слово для пошуку.
+     * @return Список медикаментів, що відповідають пошуковому запиту.
+     */
     public List<Medicine> searchMedicine(String keyword) {
 
         RowMapper<Medicine> mapper = new RowMapper() {
@@ -309,12 +425,17 @@ public class MedicineListRepository {
             }
         };
 
-        //return jdbcTemplate.query("SELECT MedicineID, MedicineName FROM Medicine WHERE MedicineName LIKE N'%" + keyword + "%'", mapper);
         String sql = "SELECT MedicineID, MedicineName FROM Medicine WHERE MedicineName LIKE ?";
         String query = "%" + keyword + "%";
+
         return jdbcTemplate.query(sql, mapper, query);
     }
 
+    /**
+     * Видаляє медичний список за його ідентифікатором.
+     *
+     * @param id Ідентифікатор медичного списку.
+     */
     public void deleteMedicineListById(Integer id) {
         String sql = """
                     DELETE FROM MedicineListItem WHERE MedicineListRef = ?;

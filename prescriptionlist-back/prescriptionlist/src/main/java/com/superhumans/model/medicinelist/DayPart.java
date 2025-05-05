@@ -6,19 +6,51 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+/**
+ * Клас {@code DayPart} представляє частину доби для прийому ліків.
+ * Містить інформацію про час, дозування, а також статуси виконання плану прийому.
+ */
 @Getter
 @Setter
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class DayPart {
 
+    /**
+     * Унікальний ідентифікатор частини дня.
+     */
     String id;
     //LocalTime time;
+
+    /**
+     * Час прийому ліків у форматі {@code String}.
+     * Може бути у вигляді HH:mm або іншим зручним для фронтенду способом.
+     */
     String time;
+
+    /**
+     * Доза ліків, яку потрібно прийняти у цій частині дня.
+     */
     Integer medicineDose;
+
+    /**
+     * Прапорець, який вказує, чи заплановано цей прийом.
+     */
     Boolean isPlanned;
+
+    /**
+     * Прапорець, який вказує, чи був цей прийом виконаний.
+     */
     Boolean isCompleted;
+
+    /**
+     * Прапорець, який вказує, чи прострочений цей прийом.
+     */
     Boolean isOverdue;
+
+    /**
+     * Прапорець, який вказує, чи прийом вважається невдалим.
+     */
     Boolean isFailed;
 
     @Override

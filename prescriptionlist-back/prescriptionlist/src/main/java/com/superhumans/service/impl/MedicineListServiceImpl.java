@@ -86,4 +86,9 @@ public class MedicineListServiceImpl implements MedicineService {
         return medicineListRepository.isDocumentEditing(id);
     }
 
+    @Override
+    public List<Patient> getAllInpatients() {
+        return medicineListRepository.getAllInpatients();
+    }
+
 }

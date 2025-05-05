@@ -31,4 +31,6 @@ public interface MedicineService {
     void updateMedicineListStatusByListId(Integer id, String status);
 
     Boolean isDocumentEditing(Integer id);
+
+    List<Patient> getAllInpatients();
 }
