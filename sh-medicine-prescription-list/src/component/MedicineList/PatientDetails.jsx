@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import { searchPatients } from "../../utils/ApiFunctions";
 import { getPatientById } from "../../utils/ApiFunctions";
 import {
@@ -28,12 +28,12 @@ export default function PatientDetails(props) {
     },
   ]);
 
-  const [patientName, setPatientName] = React.useState("");
-  const [searchedPatients, setSearchedPatients] = React.useState([
+  const [patientName, setPatientName] = useState("");
+  const [searchedPatients, setSearchedPatients] = useState([
     { id: "", name: "" },
   ]);
 
-  const [patient, setPatient] = React.useState({
+  const [patient, setPatient] = useState({
     id: "",
     name: "",
     historyNumber: "",
@@ -48,8 +48,8 @@ export default function PatientDetails(props) {
     doctor: "",
   });
 
-  const [selectDocument, setSelectDocument] = React.useState("1|1");
-  const [selectedDocument, setSelectedDocument] = React.useState([]);
+  const [selectDocument, setSelectDocument] = useState("1|1");
+  const [selectedDocument, setSelectedDocument] = useState([]);
 
   function handleSelectDocument(link, selectedIndex) {
     setSelectDocument(link);
@@ -59,7 +59,7 @@ export default function PatientDetails(props) {
     setSelectedDocument(newSelectedDocumentArr);
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (id && patientStateId) {
       getPatientById(patientStateId).then((patient) => {
         setPatientStateId(null);
@@ -68,9 +68,9 @@ export default function PatientDetails(props) {
     }
   }, [patient.id]);
 
-  const [showSuggestions, setShowSuggestions] = React.useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchDocuments = async () => {
       if (!patient.id) return;
 

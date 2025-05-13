@@ -79,6 +79,72 @@ export function handleAddNewDayDetails(
   setMedicineListItem([...medicineDetails]);
 }
 
+export function handleAddNewDayDetails2(
+  medicineDetails,
+  rowIndex,
+  colIndex,
+  setMedicineListItem,
+  dates
+) {
+  for (let k = 0; k < 20; k++)
+    medicineDetails[rowIndex]?.medicineDetails?.push({
+      id: nanoid(),
+      date: dates[colIndex],
+      morning: {
+        id: nanoid(),
+        time: "",
+        medicineDose:
+          medicineDetails[rowIndex]?.medicineDetails[0].morning.medicineDose,
+        isPlanned: medicineDetails[rowIndex]?.medicineDetails[0].morning
+          .isPlanned
+          ? true
+          : false,
+        isCompleted: false,
+        isOverdue: false,
+        isFailed: false,
+      },
+      day: {
+        id: nanoid(),
+        time: "",
+        medicineDose:
+          medicineDetails[rowIndex]?.medicineDetails[0].day.medicineDose,
+        isPlanned: medicineDetails[rowIndex]?.medicineDetails[0].day.isPlanned
+          ? true
+          : false,
+        isCompleted: false,
+        isOverdue: false,
+        isFailed: false,
+      },
+      evening: {
+        id: nanoid(),
+        time: "",
+        medicineDose:
+          medicineDetails[rowIndex]?.medicineDetails[0].evening.medicineDose,
+        isPlanned: medicineDetails[rowIndex]?.medicineDetails[0].evening
+          .isPlanned
+          ? true
+          : false,
+        isCompleted: false,
+        isOverdue: false,
+        isFailed: false,
+      },
+      night: {
+        id: nanoid(),
+        time: "",
+        medicineDose:
+          medicineDetails[rowIndex]?.medicineDetails[0].night.medicineDose,
+        isPlanned: medicineDetails[rowIndex]?.medicineDetails[0].night.isPlanned
+          ? true
+          : false,
+        isCompleted: false,
+        isOverdue: false,
+        isFailed: false,
+      },
+    });
+
+  setMedicineListItem([...medicineDetails]);
+}
+
 /**
  * Видаляє останній запис дня з деталей прийому ліків
  * @param {*} medicineDetails Масив об’єктів ліків
@@ -94,6 +160,20 @@ export function handleDelNewDayDetails(
   setMedicineListItem
 ) {
   medicineDetails[rowIndex]?.medicineDetails?.pop();
+  setMedicineListItem([...medicineDetails]);
+}
+
+export function handleDelNewDayDetails2(
+  medicineDetails,
+  rowIndex,
+  colIndex,
+  setMedicineListItem
+) {
+  if (medicineDetails[rowIndex]) {
+    medicineDetails[rowIndex].medicineDetails = [
+      medicineDetails[rowIndex].medicineDetails[0],
+    ];
+  }
   setMedicineListItem([...medicineDetails]);
 }
 
@@ -382,6 +462,24 @@ export function getWeekDates(date) {
   return dates;
 }
 
+export function getCustomWeekDates(date, daysCount) {
+  let dates = [];
+  let today = "";
+  if (date) {
+    today = date;
+  } else {
+    today = new Date();
+  }
+
+  for (let i = 0; i < daysCount; i++) {
+    let nextDate = new Date(today);
+    nextDate.setDate(today.getDate() + i);
+    dates.push(nextDate.toISOString().split("T")[0]);
+  }
+
+  return dates;
+}
+
 /**
  * Конвертує масив із значеннями дати в об'єкт Date
  * @param {*} list Масив [рік, місяць, день, година, хвилина, секунда, наносекунди]
@@ -409,3 +507,5 @@ export function formatDate(list) {
 export function isEmpty(str) {
   return str === null || str.match(/^ *$/) !== null;
 }
+
+export function autoPlan() {}

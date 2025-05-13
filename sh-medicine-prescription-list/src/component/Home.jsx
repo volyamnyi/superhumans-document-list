@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState}from "react";
 import { searchPatients } from "../utils/ApiFunctions";
 import { getPatientById } from "../utils/ApiFunctions";
 import {
@@ -13,6 +13,8 @@ import { formatDate } from "../utils/Functions";
 import ListDetails from "./MedicineList/ListDetails";
 
 export default function Home() {
+  const [presentation, setPresentation] = React.useState(1);
+
   const { id } = useParams();
   const [patientStateId, setPatientStateId] = React.useState(id);
   const ROLE = localStorage.getItem("businessRole");
@@ -28,12 +30,12 @@ export default function Home() {
     },
   ]);
 
-  const [patientName, setPatientName] = React.useState("");
-  const [searchedPatients, setSearchedPatients] = React.useState([
+  const [patientName, setPatientName] = useState("");
+  const [searchedPatients, setSearchedPatients] = useState([
     { id: "", name: "" },
   ]);
 
-  const [patient, setPatient] = React.useState({
+  const [patient, setPatient] = useState({
     id: "",
     name: "",
     historyNumber: "",
@@ -48,7 +50,7 @@ export default function Home() {
     doctor: "",
   });
 
-  const [patients, setPatients] = React.useState([]);
+  const [patients, setPatients] = useState([]);
 
   React.useEffect(() => {
     getAllInpatients().then((patients) => {
@@ -56,8 +58,8 @@ export default function Home() {
     });
   }, []);
 
-  const [selectDocument, setSelectDocument] = React.useState("1|1");
-  const [selectedDocument, setSelectedDocument] = React.useState([]);
+  const [selectDocument, setSelectDocument] = useState("1|1");
+  const [selectedDocument, setSelectedDocument] = useState([]);
 
   function handleSelectDocument(link, selectedIndex) {
     setSelectDocument(link);
@@ -76,7 +78,7 @@ export default function Home() {
     }
   }, [patient.id]);
 
-  const [showSuggestions, setShowSuggestions] = React.useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   React.useEffect(() => {
     const fetchDocuments = async () => {
@@ -138,8 +140,33 @@ export default function Home() {
     setSelectedDocument(newSelectedDocumentArr);
   }
 
-  return (
+  function handleSetPresentation(event) {
+    const selectedValue = event.target.value;
+    if (selectedValue === "presentation1") {
+      setPresentation(1);
+    } else if (selectedValue === "presentation2") {
+      setPresentation(2);
+    }
+  }
+
+  const presentationA = (
     <>
+      <input
+        className="radio-input"
+        type="radio"
+        style={{ marginLeft: "10px" }}
+        name="presentation"
+        value="presentation1"
+        onChange={handleSetPresentation}
+      />
+      <input
+        className="radio-input"
+        type="radio"
+        style={{ marginLeft: "10px" }}
+        name="presentation"
+        value="presentation2"
+        onChange={handleSetPresentation}
+      />
       <div>
         <div>
           <meta charSet="UTF-8" />
@@ -149,43 +176,137 @@ export default function Home() {
           />
           <title>Листок медичних призначень</title>
           <style>{`
-    body {
-      font-family: Arial, sans-serif;
-    }
+body {
+  font-family: Arial, sans-serif;
+}
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-    }
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-    th, td {
-      border: 1px solid #ccc;
-      padding: 6px;
-      text-align: left;
-    }
+th, td {
+  border: 1px solid #ccc;
+  padding: 6px;
+  text-align: left;
+}
 
-    th {
-      background-color: #e0f0ff;
-    }
+th {
+  background-color: #e0f0ff;
+}
 
-    tr:nth-child(even) {
-      background-color: #ccffcc;
-    }
+tr:nth-child(even) {
+  background-color: #ccffcc;
+}
 
-    tr:nth-child(odd) {
-      /*background-color: #e6ecff;*/
-      background-color: #ccffcc;
-    }
+tr:nth-child(odd) {
+  /*background-color: #e6ecff;*/
+  background-color: #ccffcc;
+}
 
-    .header {
-      background-color: #b0d0ff;
-    }
+.header {
+  background-color: #b0d0ff;
+}
 
-    .highlight {
-      background-color: #ccffcc !important;
-      font-weight: bold;
-    }
-  `}</style>
+.highlight {
+  background-color: #ccffcc !important;
+  font-weight: bold;
+}
+`}</style>
+          {presentation === 2 && <div className="sidebar">
+            <div className="search-container">
+              <div>
+                <input
+                  type="text"
+                  placeholder="Пошук..."
+                  id="search"
+                  className="search-input"
+                  name="search"
+                  value={patientName}
+                  onChange={handleSearchPatientsInputChange}
+                  onFocus={() => setShowSuggestions(true)}
+                  autoComplete="off"
+                />
+                {!isEmpty(patientName) && showSuggestions && (
+                  <div className="searched-patients-dropdown">
+                    {searchedPatients.map((patient, i) => (
+                      <a
+                        onClick={handleSearchedPatientClick}
+                        data-patientid={patient.id}
+                        href="#"
+                        key={i}
+                      >
+                        {patient.name}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>}
+          <div className="content" style={presentation === 1 ? { marginLeft: "0" } : {}}>
+            <h2>Список пацієнтів</h2>
+            <table>
+              <thead>
+                <tr className="header">
+                  <th>Номер</th>
+                  <th>Пацієнт</th>
+                  <th>Палата</th>
+                  <th>Ліжко</th>
+                </tr>
+              </thead>
+              <tbody>
+                {patients.map((patient, i) => (
+                  <tr key={i}>
+                    <td>{patient.historyNumber}</td>
+                    <td>
+                      {
+                        <Link
+                          data-patientid={patient.id}
+                          to={`/patientdetails/${patient.id}`}
+                          key={i}
+                        >
+                          {patient.name}
+                        </Link>
+                      }
+                    </td>
+                    <td>{patient.roomNumber}</td>
+                    <td>{patient.bedNumber}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+  const presentationB = (
+    <>
+      <input
+        className="radio-input"
+        type="radio"
+        style={{ marginLeft: "10px" }}
+        name="presentation"
+        value="presentation1"
+        onChange={handleSetPresentation}
+      />
+      <input
+        className="radio-input"
+        type="radio"
+        style={{ marginLeft: "10px" }}
+        name="presentation"
+        value="presentation2"
+        onChange={handleSetPresentation}
+      />
+      <div>
+        <div>
+          <meta charSet="UTF-8" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+          />
+          <title>Листок медичних призначень</title>
 
           <div className="sidebar">
             <div className="search-container">
@@ -219,41 +340,105 @@ export default function Home() {
             </div>
           </div>
           <div className="content">
-            <h2>Список пацієнтів</h2>
-            <table>
-              <thead>
-                <tr class="header">
-                  <th>Номер</th>
-                  <th>Пацієнт</th>
-                  <th>Палата</th>
-                  <th>Ліжко</th>
-                </tr>
-              </thead>
-              <tbody>
-                {patients.map((patient, i) => (
-                  <tr>
-                    <td>{patient.historyNumber}</td>
-                    <td>
-                      {
-                        <Link
-                          data-patientid={patient.id}
-                          to={`/patientdetails/${patient.id}`}
+            {patient.id && (
+              <>
+                <div className="profile">
+                  <h2>
+                    <span>
+                      [{patient.id}] {patient.name}
+                    </span>
+                  </h2>
+                  <p>
+                    <span>{patient.historyNumber}</span>
+                  </p>
+                  <p>
+                    Адреса: <span>{patient.address} </span>
+                  </p>
+                  <p>
+                    Тел.: <span>{patient.phone}</span>
+                  </p>
+                  <p>
+                    Відділення: <span>{patient.department}</span>
+                  </p>
+                  <p>
+                    Номер палати: <span>{patient.roomNumber}</span>
+                  </p>
+                  <p>
+                    Ліжко: <span>{patient.bedNumber}</span>
+                  </p>
+                  <p>
+                    Лікар: <span>{patient.doctor}</span>
+                  </p>
+                  <p>
+                    Стать: <span>{patient.gender}</span>
+                  </p>
+                  <p>
+                    Вік: <span>{patient.age}</span>
+                  </p>
+                  <p>
+                    Дата народження: <span>{patient.birthDate}</span>
+                  </p>
+                </div>
+                <div style={{ display: "flex", flexDirection: "row" }}>
+                  <div className="documents">
+                    <h3>Список документів пацієнта</h3>
+                    {documentsList.map((document, i) => (
+                      <a
+                        href="#"
+                        key={i}
+                        onClick={() => {
+                          handleSelectDocument(
+                            document.medicineListID + "|" + document.patientRef,
+                            i
+                          );
+                        }}
+                      >
+                        <div
+                          className={`document-item ${
+                            selectedDocument[i] ? "selected" : ""
+                          }`}
                           key={i}
                         >
-                          {" "}
-                          {patient.name}{" "}
-                        </Link>
-                      }
-                    </td>
-                    <td>{patient.roomNumber}</td>
-                    <td>{patient.bedNumber}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                          <p>
+                            {document.medicineListCreationDate &&
+                              formatDate(document).toLocaleDateString()}{" "}
+                            - {document.medicineListCreationUser}
+                          </p>
+                          <p>{document.documentName}</p>
+                        </div>
+                      </a>
+                      /*</Link>*/
+                    ))}
+                    {ROLE === "DOCTOR" && (
+                      <Link to={`/newlist/${patient.id}`}>
+                        Створити Новий Лист
+                      </Link>
+                    )}
+                  </div>
+                  <div className="document-preview-container">
+                    <div className="buttons">
+                      <Link to={`/listdetails/${selectDocument}`}>
+                        <button className="btn">Редагуваги</button>
+                      </Link>
+
+                      <button
+                        className="btn red"
+                        onClick={() => handleDeleteDocument(selectDocument)}
+                      >
+                        X
+                      </button>
+                    </div>
+                    <div style={{ scale: 0.7 }} className="scroll-both">
+                      {<ListDetails key={selectDocument} Id={selectDocument} />}
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
     </>
   );
+  return presentation === 1 ? presentationA : presentationB;
 }

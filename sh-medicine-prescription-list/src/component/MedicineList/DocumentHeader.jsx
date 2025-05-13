@@ -43,7 +43,6 @@ export default function DocumentHeader(props) {
             Вік: <span className="patient-age-row">{patient.age}</span>
             <br />
             <span className="patient-birthdate-row">
-              {" "}
               Дата народження: {patient.birthDate}
             </span>
           </div>

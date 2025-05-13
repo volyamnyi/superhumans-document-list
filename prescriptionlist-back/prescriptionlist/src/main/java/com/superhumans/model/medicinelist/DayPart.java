@@ -31,7 +31,7 @@ public class DayPart {
     /**
      * Доза ліків, яку потрібно прийняти у цій частині дня.
      */
-    Integer medicineDose;
+    String medicineDose;
 
     /**
      * Прапорець, який вказує, чи заплановано цей прийом.

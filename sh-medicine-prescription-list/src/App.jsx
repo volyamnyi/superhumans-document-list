@@ -6,6 +6,7 @@ import Main from "./component/Main";
 import ListDetails from "./component/MedicineList/ListDetails";
 import PatientDetails from "./component/MedicineList/PatientDetails";
 import NewList from "./component/MedicineList/NewList";
+import TemperatureList from "./component/MedicineList/TemperatureList";
 import { AuthContext } from "./component/auth/AuthProvider";
 import Registration from "./component/auth/Registration";
 import Login from "./component/auth/Login";
@@ -36,6 +37,7 @@ function App() {
           <Route index element={!isLoggedIn ? <Login /> : <Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Registration />} />
+          <Route path="/temperaturelist" element={<TemperatureList />} />
           <Route
             path="/admin"
             element={

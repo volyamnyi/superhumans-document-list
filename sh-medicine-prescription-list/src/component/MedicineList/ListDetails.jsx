@@ -8,7 +8,7 @@ import {
   updateMedicineListById,
   updateMedicineListStatusByListId,
   isDocumentEditing,
-  searchMedicine
+  searchMedicine,
 } from "../../utils/ApiFunctions";
 
 import {
@@ -17,17 +17,18 @@ import {
   handleAddNewMedicineItem,
   handleRemoveMedicineItem,
   handleAddNewDayDetails,
-  handleDelNewDayDetails, 
+  handleAddNewDayDetails2,
+  handleDelNewDayDetails,
+  handleDelNewDayDetails2,
   handleMedicineMethodChange,
   isEmpty,
   handleSubmit,
   getWeekDates,
+  getCustomWeekDates,
   formatDate,
   handleSearchedMedicineClick,
-  handleCurrentRowClick
+  handleCurrentRowClick,
 } from "../../utils/Functions";
-
-
 
 export default function ListDetails(props) {
   const { Id } = props;
@@ -47,10 +48,12 @@ export default function ListDetails(props) {
     medicineListCreationDate: null,
     medicineDetails: [],
   });
-
+  
   const [medicineDetails, setMedicineListItem] = useState([]);
   const [triggerSubmit, setTriggerSubmit] = useState(false);
   const [dates, setDates] = useState([]);
+  const [customDates, setCustomDates] = useState([]);
+  const [daysCount, setDaysCount] = useState(1)
 
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [currentRowSuggestionIndex, setCurrentRowSuggestionIndex] = useState();
@@ -65,8 +68,9 @@ export default function ListDetails(props) {
       setMedicineList(list);
       setMedicineListItem(medicineList.medicineDetails);
       setDates(getWeekDates(formatDate(list)));
+      setCustomDates(getCustomWeekDates(formatDate(list), daysCount));
     });
-  }, [medicineList.medicineListID]);
+  }, [medicineList.medicineListID,daysCount]);
 
   useEffect(() => {
     if (triggerSubmit) {
@@ -166,17 +170,22 @@ export default function ListDetails(props) {
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       {!isScaled && <DocumentHeader id={id.split("|")[1]} />}
       <List
+        isNew={false}
         handleItemChange={handleItemChange}
         andleDetailChange={handleDetailChange}
         handleAddNewMedicineItem={handleAddNewMedicineItem}
         handleRemoveMedicineItem={handleRemoveMedicineItem}
         handleAddNewDayDetails={handleAddNewDayDetails}
+        handleAddNewDayDetails2={handleAddNewDayDetails2}
         handleDelNewDayDetails={handleDelNewDayDetails}
+        handleDelNewDayDetails2={handleDelNewDayDetails2}
         handleMedicineMethodChange={handleMedicineMethodChange}
         handleSubmit={handleSubmit}
         handleSearchedMedicineClick={handleSearchedMedicineClick}
         handleCurrentRowClick={handleCurrentRowClick}
         dates={dates}
+        customDates={customDates}
+        setDaysCount={setDaysCount}
         medicineList={medicineList}
         medicineDetails={medicineDetails}
         currentRowSuggestionIndex={currentRowSuggestionIndex}

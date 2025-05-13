@@ -1,23 +1,26 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import DocumentHeader from "./DocumentHeader";
 import List from "./List";
 
-import {
-  addNewMedicineList,
-  searchMedicine,
-} from "../../utils/ApiFunctions";
+import { addNewMedicineList, searchMedicine } from "../../utils/ApiFunctions";
 
 import {
   handleItemChange,
   handleDetailChange,
   handleAddNewMedicineItem,
+  handleRemoveMedicineItem,
   handleAddNewDayDetails,
+  handleAddNewDayDetails2,
+  handleDelNewDayDetails,
+  handleDelNewDayDetails2,
   handleMedicineMethodChange,
-  handleCurrentRowClick,
-  handleSearchedMedicineClick,
+  isEmpty,
   handleSubmit,
   getWeekDates,
-  isEmpty
+  getCustomWeekDates,
+  formatDate,
+  handleSearchedMedicineClick,
+  handleCurrentRowClick,
 } from "../../utils/Functions";
 
 import { useParams } from "react-router-dom";
@@ -27,7 +30,7 @@ export default function NewList() {
 
   const ROLE = localStorage.getItem("businessRole");
 
-  const [medicineList, setMedicineList] = React.useState({
+  const [medicineList, setMedicineList] = useState({
     medicineListID: 0,
     patientRef: id,
     documentName: "Листок лікарських призначень (стаціонар)",
@@ -38,22 +41,20 @@ export default function NewList() {
     medicineDetails: [],
   });
 
-  const [medicineDetails, setMedicineListItem] = React.useState([]);
-  const [triggerSubmit, setTriggerSubmit] = React.useState(false);
+  const [medicineDetails, setMedicineListItem] = useState([]);
+  const [triggerSubmit, setTriggerSubmit] = useState(false);
 
   const dates = getWeekDates(new Date());
 
-  const [showSuggestions, setShowSuggestions] = React.useState(false);
-  const [currentRowSuggestionIndex, setCurrentRowSuggestionIndex] =
-    React.useState();
-  const [medicineName, setMedicineName] = React.useState("");
-  const [triggerSearchedMedicine, setTriggerSearchedMedicine] =
-    React.useState(false);
-  const [searchedMedicine, setSearchedMedicine] = React.useState([
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [currentRowSuggestionIndex, setCurrentRowSuggestionIndex] = useState();
+  const [medicineName, setMedicineName] = useState("");
+  const [triggerSearchedMedicine, setTriggerSearchedMedicine] = useState(false);
+  const [searchedMedicine, setSearchedMedicine] = useState([
     { id: "", name: "" },
   ]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (triggerSubmit) {
       (async () => {
         const response = await addNewMedicineList(medicineList);
@@ -67,7 +68,7 @@ export default function NewList() {
     }
   }, [medicineList, triggerSubmit]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (triggerSearchedMedicine) {
       (async () => {
         if (!isEmpty(medicineName)) {
@@ -87,10 +88,15 @@ export default function NewList() {
     <>
       <DocumentHeader id={id} />
       <List
+        isNew={true}
         handleItemChange={handleItemChange}
         andleDetailChange={handleDetailChange}
         handleAddNewMedicineItem={handleAddNewMedicineItem}
+        handleRemoveMedicineItem={handleRemoveMedicineItem}
         handleAddNewDayDetails={handleAddNewDayDetails}
+        handleAddNewDayDetails2={handleAddNewDayDetails2}
+        handleDelNewDayDetails={handleDelNewDayDetails}
+        handleDelNewDayDetails2={handleDelNewDayDetails2}
         handleMedicineMethodChange={handleMedicineMethodChange}
         handleSubmit={handleSubmit}
         handleSearchedMedicineClick={handleSearchedMedicineClick}

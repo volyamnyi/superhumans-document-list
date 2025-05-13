@@ -53,7 +53,10 @@ input::-webkit-inner-spin-button {
   row-gap: 10px;
 }
 
-.content .profile span, .patient-address-container span, .patient-gender-age-container span, .patinet-details-container span {
+.content .profile span,
+.patient-address-container span,
+.patient-gender-age-container span,
+.patinet-details-container span {
   font-weight: bold;
 }
 
@@ -143,7 +146,8 @@ input::-webkit-inner-spin-button {
 }
 
 .plus,
-button[type="button"],.save-button {
+button[type="button"],
+.save-button {
   padding: 1px 3px;
   border-radius: 4px;
   background-color: #007bff;
@@ -172,7 +176,7 @@ button[type="button"],.save-button {
 .day-cell,
 .day-cell-input-label {
   height: 20px;
-  width: 60px;
+  min-width: 20px;
 }
 
 .day-period > div {
@@ -199,7 +203,21 @@ button[type="button"],.save-button {
 }
 
 .day-cell-dose-input {
-  width: 20px;
+  min-width: 20px;
+  height: 20px;
+  transition: width 0.3s;
+  transition: height 0.3s;
+  resize: none;
+  overflow: hidden;
+}
+
+.day-cell-dose-input:focus {
+  position: absolute;
+  width: 75px;
+  height: 75px;
+  transition: width 0.3s;
+  transition: height 0.3s;
+  z-index: 10;
 }
 
 /*Home page begin*/
@@ -324,7 +342,7 @@ body {
   padding: 2px 5px;
   margin-right: 5px;
   border: 1px solid #ccc;
-  background-color: #add8e6; 
+  background-color: #add8e6;
   cursor: pointer;
   font-size: 12px;
   border-radius: 3px;
@@ -348,9 +366,6 @@ body {
   border: 1px solid #ccc;
 }
 
-.document-preview-container {
-}
-
 .scroll-both {
   width: 940px;
   height: 150px;
@@ -359,6 +374,10 @@ body {
   margin-left: -135px;
 }
 
+.radio-input {
+  margin-left: 10px !important;
+}
 /*Home page end*/
-
-
+.type-of-plan-container {
+  margin-left: 20px;
+}
