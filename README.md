@@ -52,7 +52,8 @@ nohup bash -c 'cd /home/administrator/superhumans-document-list/sh-medicine-pres
 
 Щоб перевірити ідентифікатори запущених процесів Java та сервера:
 
-ps aux | grep java
+ps aux | grep java  
+
 ps aux | grep serve
 
 Завершення процесу
