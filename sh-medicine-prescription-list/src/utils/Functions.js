@@ -86,7 +86,9 @@ export function handleAddNewDayDetails2(
   setMedicineListItem,
   dates
 ) {
-  for (let k = 0; k < 20; k++)
+  const daysCount = prompt("Введіть скільки днів додати:");
+
+  for (let k = 0; k < daysCount; k++)
     medicineDetails[rowIndex]?.medicineDetails?.push({
       id: nanoid(),
       date: dates[colIndex],
@@ -169,11 +171,17 @@ export function handleDelNewDayDetails2(
   colIndex,
   setMedicineListItem
 ) {
-  if (medicineDetails[rowIndex]) {
+  /*if (medicineDetails[rowIndex]) {
     medicineDetails[rowIndex].medicineDetails = [
       medicineDetails[rowIndex].medicineDetails[0],
     ];
-  }
+  }*/
+  let daysCount = prompt("Введіть скільки днів видалити:");
+  daysCount = daysCount - 1 >= colIndex ? daysCount = colIndex : daysCount;
+
+  console.log(colIndex);
+  for (let i = 0; i < daysCount; i++)
+    medicineDetails[rowIndex]?.medicineDetails?.pop();
   setMedicineListItem([...medicineDetails]);
 }
 

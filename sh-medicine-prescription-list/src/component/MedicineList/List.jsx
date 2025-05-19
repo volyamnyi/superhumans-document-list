@@ -392,7 +392,7 @@ export default function List({
             </button>
           )}
         </form>
-      ) : (
+      ) : (/** second*/
         <form
           onSubmit={(e) =>
             handleSubmit(e, setMedicineList, setTriggerSubmit, medicineDetails)

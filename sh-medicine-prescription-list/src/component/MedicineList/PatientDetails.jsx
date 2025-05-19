@@ -12,12 +12,12 @@ import { formatDate } from "../../utils/Functions";
 
 import ListDetails from "./ListDetails";
 
-export default function PatientDetails(props) {
+export default function PatientDetails() {
   const { id } = useParams();
-  const [patientStateId, setPatientStateId] = React.useState(id);
+  const [patientStateId, setPatientStateId] = useState(id);
   const ROLE = localStorage.getItem("businessRole");
 
-  const [documentsList, setDocumentsLList] = React.useState([
+  const [documentsList, setDocumentsLList] = useState([
     {
       medicineListID: null,
       patientRef: null,
