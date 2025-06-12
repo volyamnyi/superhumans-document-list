@@ -28,9 +28,10 @@ function App() {
   return (
     <>
       <Main>
+         &nbsp;&nbsp;&nbsp;<img src="/superhumans.svg" width={100}></img><br></br>
         {isLoggedIn && (
-          <a className="dropdown-item" href="#" onClick={handleLogout}>
-            Вийти
+           <a className="dropdown-item" href="#" onClick={handleLogout}>
+            &nbsp;&nbsp;&nbsp; Вийти
           </a>
         )}
         <Routes>

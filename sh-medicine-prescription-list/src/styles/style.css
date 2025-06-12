@@ -45,6 +45,7 @@ input::-webkit-inner-spin-button {
 
 .patient-gender-age-container {
   column-gap: 20px;
+  flex-direction: column;
 }
 
 .patinet-details-container > ul {
@@ -72,7 +73,7 @@ input::-webkit-inner-spin-button {
   border: 1px solid black;
 }
 .medicine-left {
-  width: 150px;
+  flex-direction: row;
 }
 
 .patient-address-container a {
@@ -82,21 +83,21 @@ input::-webkit-inner-spin-button {
 }
 
 .medicine-row {
-  /*flex-wrap: wrap;*/
-  gap: 50px;
-  width: fit-content;
+  display: flex;
 }
+
+/*wrapper {
+  /*display: flex;
+  flex-wrap: wrap;
+  width: 1024px;
+}*/
 
 .medicine-row input {
   border: 1px solid #ccc;
 }
 
-.medicine-left > div {
-  margin-right: 50px;
-}
-
 .medicine-date-container {
-  margin-left: 288px;
+  margin-left: 300px;
 }
 .medicine-date {
   border: 1px solid #ccc;
@@ -125,10 +126,91 @@ input::-webkit-inner-spin-button {
   margin-top: 1px;
 }
 
+.marks {
+  display: flex;
+  margin-bottom: 10px;
+  column-gap: 5px;
+}
+
+.marks *{
+  font-weight: bold;
+}
+.medicine-regime-container {
+  display: flex;
+  margin-left: 80px;
+}
+
+.date-picker-container {
+  position: sticky;
+  left: 0;
+  margin-left: 70px;
+}
+
+.arrows-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+}
+.arrows-container > * {
+  cursor: pointer;
+}
+
+.medicine-regime-container textarea {
+  width: 179px;
+  height: 1.5em;
+  resize: none;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.trash-ico-container {
+  color: #f2744d;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.trash-ico-container:hover {
+  color: red;
+}
+
 .medicine-name {
   width: 179px;
   overflow: hidden;
+  margin-right: 11px;
+  margin-left: 10px;
+}
+
+.fill-all-button {
+  height: 30px;
+  width: 50px;
   margin-right: 10px;
+  font-size: 9px;
+  background-color: #fff !important;
+  color: #f2744d !important;
+  border: 1px solid #f2744d !important;
+}
+
+.fill-all-button:hover {
+  background-color: #f2744d !important;
+  color: #fff !important;
+}
+
+.medicine-row-container {
+  /*position: relative;*/
+  min-width: 500px;
+}
+
+.medicine-method-column {
+  top: -30px;
+  position: absolute;
+}
+
+.auto-resize-textarea {
+  width: 100%;
+  min-height: 2em;
+  resize: none;
+  overflow: hidden;
+  height: 65px;
 }
 
 .medicine-date,
@@ -141,20 +223,59 @@ input::-webkit-inner-spin-button {
 .day-cells-container {
   width: 241px;
 }
+.day-cells-container {
+  margin-right: -10px;
+}
 .medicine-presc-details-row {
   position: relative;
+  margin-bottom: -10px;
+  /*margin-top:-30px;*/
+}
+
+.medicine-presc-details-row-first-div {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: -10px;
 }
 
 .plus,
 button[type="button"],
-.save-button {
+.save-button,.edit-button {
   padding: 1px 3px;
   border-radius: 4px;
-  background-color: #007bff;
-  color: #fff;
+  background-color: #fff;
+  color: #f2744d;
   border: none;
   cursor: pointer;
   transition: background 0.3s;
+  border: 1px solid #f2744d;
+}
+
+.save-button:hover,.edit-button:hover {
+  color: #fff;
+  background-color: #f2744d;
+}
+
+ 
+form {
+  flex-direction: column;
+}
+
+.add-button {
+  border-radius: 0.5px;
+  width: 64px;
+  height: 32px;
+}
+
+.add-button:hover {
+  color: #fff !important;
+  background-color: #f2744d !important;
+}
+
+.save-button {
+  margin-left: 20px;
+  width: 64px;
+  height: 32px;
 }
 
 .danger {
@@ -163,20 +284,27 @@ button[type="button"],
 
 .plus {
   position: absolute;
-  left: 190px;
+  left: 240px;
+}
+
+.minus {
+  position: absolute;
+  left: 226px;
+  top: 20px;
 }
 
 .medicine-presc-details-column {
-  margin-left: -50px;
+  /* margin-left: -50px;*/
 }
 .day-cell {
   display: flex;
+  flex-wrap: wrap;
 }
 
 .day-cell,
 .day-cell-input-label {
   height: 20px;
-  min-width: 20px;
+  min-width: 30px;
 }
 
 .day-period > div {
@@ -198,12 +326,12 @@ button[type="button"],
 }
 
 .day-cell-time-input {
-  width: 20px;
-  /*visibility: hidden;*/
+  width: 100%;
+  font-size: 11px;
 }
 
 .day-cell-dose-input {
-  min-width: 20px;
+  width: 30px;
   height: 20px;
   transition: width 0.3s;
   transition: height 0.3s;
@@ -219,6 +347,19 @@ button[type="button"],
   transition: height 0.3s;
   z-index: 10;
   overflow-y: scroll;
+}
+
+.medicine-date-picker {
+  text-align: center;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+.medicine-date-picker > h3 {
+  margin-bottom: 10px;
+}
+.medicine-date-picker label {
+  margin-right: 10px;
 }
 
 /*Home page begin*/
@@ -335,6 +476,8 @@ body {
   box-sizing: border-box;
 }
 .buttons {
+  display: flex;
+  column-gap: 5px;
   margin-left: 20px;
   margin-bottom: 30px;
 }
@@ -356,10 +499,6 @@ body {
   background-color: #add8e6;
 }
 
-.save-button {
-  margin-left: 20px;
-}
-
 .diagram {
   max-width: 100%;
   height: auto;
@@ -378,7 +517,91 @@ body {
 .radio-input {
   margin-left: 10px !important;
 }
+
+.patient-sort {
+  cursor: pointer;
+}
 /*Home page end*/
 .type-of-plan-container {
   margin-left: 20px;
+}
+
+/*Modal begin*/
+.modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(211, 211, 211, 0.9); /* Light gray with some opacity */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    /* Modal box */
+    .modal {
+      background: #fff;
+      padding: 30px 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 400px;
+      max-width: 90%;
+    }
+
+    .modal h2 {
+      margin: 0 0 10px;
+      font-size: 20px;
+    }
+
+    .modal p {
+      color: #f44336;
+      margin-bottom: 25px;
+      font-size: 14px;
+    }
+
+    .buttons-modal {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .buttons-modal button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .cancel-btn {
+      background-color: #f97362 !important;
+      color: white !important;
+    }
+
+    .delete-btn {
+      background-color: transparent;
+      color: #f97362;
+      border: 1px solid #f97362;
+    }
+
+    .delete-btn:hover {
+      background-color: #f97362;
+      color: white;
+    }
+
+    .cancel-btn:hover {
+      opacity: 0.9;
+    }
+/*Modal end*/
+.blink_me {
+  animation: blinker 2s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
 }

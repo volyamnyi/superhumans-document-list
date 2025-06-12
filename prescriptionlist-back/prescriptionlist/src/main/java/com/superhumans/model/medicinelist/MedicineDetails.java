@@ -36,6 +36,8 @@ public class MedicineDetails {
      */
     String medicineMethod;
 
+
+    String regime;
     /**
      * Назва медикаменту.
      */
@@ -59,13 +61,14 @@ public class MedicineDetails {
     @Override
     public String toString() {
         return "MedicineDetails{" +
-                "medicineListItemId=" + medicineListItemId +
+                "medicineListItemId='" + medicineListItemId + '\'' +
                 ", medicineListItemEditUser='" + medicineListItemEditUser + '\'' +
-                ", medicineListItemMethod='" + medicineMethod + '\'' +
-                ", medicineListItemName='" + medicineName + '\'' +
+                ", medicineMethod='" + medicineMethod + '\'' +
+                ", regime='" + regime + '\'' +
+                ", medicineName='" + medicineName + '\'' +
                 ", medicineListItemEditDate=" + medicineListItemEditDate +
                 ", medicineDetails=" + medicineDetails +
-                ", status=" + status +
+                ", status='" + status + '\'' +
                 '}';
     }
 }

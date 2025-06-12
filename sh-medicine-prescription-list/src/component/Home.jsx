@@ -1,4 +1,4 @@
-import React, {useState}from "react";
+import { useState, useEffect } from "react";
 import { searchPatients } from "../utils/ApiFunctions";
 import { getPatientById } from "../utils/ApiFunctions";
 import {
@@ -9,17 +9,21 @@ import { deleteDocumentById } from "../utils/ApiFunctions";
 import { Link, useParams } from "react-router-dom";
 import { isEmpty } from "../utils/Functions";
 import { formatDate } from "../utils/Functions";
-
+import { formatDate2 } from "../utils/Functions";
+import { formatDateToISO } from "../utils/Functions";
+import { isoToTimestampSeconds } from "../utils/Functions";
+import { isLessThanOneHour } from "../utils/Functions";
 import ListDetails from "./MedicineList/ListDetails";
+import { useMemo } from "react";
 
 export default function Home() {
-  const [presentation, setPresentation] = React.useState(1);
+  const [presentation, setPresentation] = useState(1);
 
   const { id } = useParams();
-  const [patientStateId, setPatientStateId] = React.useState(id);
+  const [patientStateId, setPatientStateId] = useState(id);
   const ROLE = localStorage.getItem("businessRole");
 
-  const [documentsList, setDocumentsLList] = React.useState([
+  const [documentsList, setDocumentsLList] = useState([
     {
       medicineListID: null,
       patientRef: null,
@@ -51,9 +55,18 @@ export default function Home() {
   });
 
   const [patients, setPatients] = useState([]);
+  const [patientsDocuments, setPatientsDocuments] = useState([]);
+  //console.log(patients)
 
-  React.useEffect(() => {
-    getAllInpatients().then((patients) => {
+  /*useEffect(() => {
+    patients.map(patient=>getAllDocumentsByPatientId(patient.id).then((documents) => {
+      if(documents.length>0) return setPatientsDocuments(prevValue=>[...prevValue, documents] );
+    }))
+    ;
+  }, [patients]);
+  console.log(patientsDocuments);*/
+  useEffect(() => {
+    getAllInpatients(true).then((patients) => {
       return setPatients(patients);
     });
   }, []);
@@ -69,7 +82,7 @@ export default function Home() {
     setSelectedDocument(newSelectedDocumentArr);
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (id && patientStateId) {
       getPatientById(patientStateId).then((patient) => {
         setPatientStateId(null);
@@ -80,7 +93,7 @@ export default function Home() {
 
   const [showSuggestions, setShowSuggestions] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchDocuments = async () => {
       if (!patient.id) return;
 
@@ -149,6 +162,37 @@ export default function Home() {
     }
   }
 
+  const [order, setOrder] = useState(false);
+
+  function handlePatientsSort() {
+    getAllInpatients(order).then((patients) => {
+      return setPatients(patients);
+    });
+    setOrder((prevValue) => !prevValue);
+  }
+
+  //const [highLightIds, setHighLightIds] = useState([]);
+
+  const highLightIds = useMemo(() => {
+  const ids = [];
+
+  patients.forEach((p) => {
+    p.medicineListEditDates.forEach((mled) => {
+      if (
+        isLessThanOneHour(
+          isoToTimestampSeconds(formatDate2(mled).toISOString())
+        )
+      ) {
+        ids.push(p.id);
+      }
+    });
+  });
+
+  return ids;
+}, [patients]);
+
+  console.log(highLightIds);
+
   const presentationA = (
     <>
       <input
@@ -213,52 +257,67 @@ tr:nth-child(odd) {
   font-weight: bold;
 }
 `}</style>
-          {presentation === 2 && <div className="sidebar">
-            <div className="search-container">
-              <div>
-                <input
-                  type="text"
-                  placeholder="Пошук..."
-                  id="search"
-                  className="search-input"
-                  name="search"
-                  value={patientName}
-                  onChange={handleSearchPatientsInputChange}
-                  onFocus={() => setShowSuggestions(true)}
-                  autoComplete="off"
-                />
-                {!isEmpty(patientName) && showSuggestions && (
-                  <div className="searched-patients-dropdown">
-                    {searchedPatients.map((patient, i) => (
-                      <a
-                        onClick={handleSearchedPatientClick}
-                        data-patientid={patient.id}
-                        href="#"
-                        key={i}
-                      >
-                        {patient.name}
-                      </a>
-                    ))}
-                  </div>
-                )}
+          {presentation === 2 && (
+            <div className="sidebar">
+              <div className="search-container">
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Пошук..."
+                    id="search"
+                    className="search-input"
+                    name="search"
+                    value={patientName}
+                    onChange={handleSearchPatientsInputChange}
+                    onFocus={() => setShowSuggestions(true)}
+                    autoComplete="off"
+                  />
+                  {!isEmpty(patientName) && showSuggestions && (
+                    <div className="searched-patients-dropdown">
+                      {searchedPatients.map((patient, i) => (
+                        <a
+                          onClick={handleSearchedPatientClick}
+                          data-patientid={patient.id}
+                          href="#"
+                          key={i}
+                        >
+                          {patient.name}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>}
-          <div className="content" style={presentation === 1 ? { marginLeft: "0" } : {}}>
+          )}
+          <div
+            className="content"
+            style={presentation === 1 ? { marginLeft: "0" } : {}}
+          >
             <h2>Список пацієнтів</h2>
             <table>
               <thead>
                 <tr className="header">
                   <th>Номер</th>
-                  <th>Пацієнт</th>
+                  <th onClick={handlePatientsSort} className="patient-sort">
+                    Пацієнт
+                  </th>
                   <th>Палата</th>
                   <th>Ліжко</th>
                 </tr>
               </thead>
               <tbody>
                 {patients.map((patient, i) => (
-                  <tr key={i}>
-                    <td>{patient.historyNumber}</td>
+                  <tr
+                    key={i}
+                    style={
+                      highLightIds.includes(patient.id)
+                        ? { backgroundColor: "orange" }
+                        : {}
+                    }
+                    className={highLightIds.includes(patient.id) ? "blink_me" : ""}
+                  >
+                    <td>{patient.id}</td>
                     <td>
                       {
                         <Link
@@ -407,7 +466,6 @@ tr:nth-child(odd) {
                           <p>{document.documentName}</p>
                         </div>
                       </a>
-                      /*</Link>*/
                     ))}
                     {ROLE === "DOCTOR" && (
                       <Link to={`/newlist/${patient.id}`}>
@@ -418,11 +476,14 @@ tr:nth-child(odd) {
                   <div className="document-preview-container">
                     <div className="buttons">
                       <Link to={`/listdetails/${selectDocument}`}>
-                        <button className="btn">Редагуваги</button>
+                        <button className="edit-button" type="button">
+                          Редагуваги
+                        </button>
                       </Link>
 
                       <button
                         className="btn red"
+                        type="button"
                         onClick={() => handleDeleteDocument(selectDocument)}
                       >
                         X

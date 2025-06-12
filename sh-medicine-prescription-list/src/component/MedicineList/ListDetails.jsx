@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import DocumentHeader from "./DocumentHeader";
 import List from "./List";
@@ -28,6 +28,7 @@ import {
   formatDate,
   handleSearchedMedicineClick,
   handleCurrentRowClick,
+  handleMedicineRegimeChange
 } from "../../utils/Functions";
 
 export default function ListDetails(props) {
@@ -43,7 +44,7 @@ export default function ListDetails(props) {
     patientRef: null,
     documentName: "",
     medicineListCreationUser: `${
-      localStorage.getItem("firstName") + " " + localStorage.getItem("lastName")
+      localStorage.getItem("sub")
     }`,
     medicineListCreationDate: null,
     medicineDetails: [],
@@ -52,8 +53,6 @@ export default function ListDetails(props) {
   const [medicineDetails, setMedicineListItem] = useState([]);
   const [triggerSubmit, setTriggerSubmit] = useState(false);
   const [dates, setDates] = useState([]);
-  const [customDates, setCustomDates] = useState([]);
-  const [daysCount, setDaysCount] = useState(1)
 
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [currentRowSuggestionIndex, setCurrentRowSuggestionIndex] = useState();
@@ -68,14 +67,13 @@ export default function ListDetails(props) {
       setMedicineList(list);
       setMedicineListItem(medicineList.medicineDetails);
       setDates(getWeekDates(formatDate(list)));
-      setCustomDates(getCustomWeekDates(formatDate(list), daysCount));
     });
-  }, [medicineList.medicineListID,daysCount]);
+  }, [medicineList.medicineListID]);
 
   useEffect(() => {
     if (triggerSubmit) {
       (async () => {
-        const response = await updateMedicineListById(medicineList);
+        const response = await updateMedicineListById(medicineList, JSON.parse(localStorage.getItem("patient")));
         if (response.status === 200) {
           alert("Success");
         } else {
@@ -184,8 +182,6 @@ export default function ListDetails(props) {
         handleSearchedMedicineClick={handleSearchedMedicineClick}
         handleCurrentRowClick={handleCurrentRowClick}
         dates={dates}
-        customDates={customDates}
-        setDaysCount={setDaysCount}
         medicineList={medicineList}
         medicineDetails={medicineDetails}
         currentRowSuggestionIndex={currentRowSuggestionIndex}
@@ -205,6 +201,7 @@ export default function ListDetails(props) {
         triggerSearchedMedicine={triggerSearchedMedicine}
         searchedMedicine={searchedMedicine}
         isScaled={isScaled}
+        handleMedicineRegimeChange={handleMedicineRegimeChange}
       />
     </>
   );

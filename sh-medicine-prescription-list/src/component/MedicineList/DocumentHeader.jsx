@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getPatientById } from "../../utils/ApiFunctions";
 
@@ -19,32 +19,39 @@ export default function DocumentHeader(props) {
   });
 
   useEffect(() => {
-    getPatientById(props.id).then((patient) => setPatient(patient));
+    getPatientById(props.id).then((patient) => {setPatient(patient);localStorage.setItem("patient", JSON.stringify(patient))});
   }, []);
 
   return (
     <div className="medicine-header">
       <div className="medicine-header-container flex">
-        <div className="flex">
-          {
+        {
             <Link
               style={{ color: "#007bff", fontWeight: "bold" }}
-              to={`/${props?.id}`}
+              to={`/patientdetails/${props?.id}`}
             >
               Назад
             </Link>
           }
-          <div className="patient-address-container flex">
-            Адреса:
-            <span className="patient-address-row">{patient.address}</span>
-          </div>
-          <div className="patient-gender-age-container flex">
-            Стать: <span className="address-heading">{patient.gender}</span>
-            Вік: <span className="patient-age-row">{patient.age}</span>
-            <br />
-            <span className="patient-birthdate-row">
-              Дата народження: {patient.birthDate}
-            </span>
+        <div className="flex">
+          
+          <div className="patinet-details-container">
+            <ul>
+            <li>
+               ПІБ:
+              <span className="patient-full-name">{patient.name}</span>
+           </li>
+            <li>
+              Стать: <span className="address-heading">{patient.gender}</span>
+            </li>
+            <li>
+              Вік: <span className="patient-age-row">{patient.age}</span>
+            </li>
+            <li>
+              Дата народження:
+              <span className="patient-birthdate-row">{patient.birthDate}</span>
+            </li>
+            </ul>
           </div>
         </div>
         <div className="patinet-details-container">
@@ -52,10 +59,6 @@ export default function DocumentHeader(props) {
             <li>
               Відділення:
               <span className="medical-unit">{patient.department}</span>
-            </li>
-            <li>
-              ПІБ:
-              <span className="patient-full-name">{patient.name}</span>
             </li>
             <li>
               Номер палати:

@@ -2,6 +2,7 @@ package com.superhumans.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.superhumans.config.SHMedicineListBot;
 import com.superhumans.model.medicinelist.Medicine;
 import com.superhumans.model.medicinelist.MedicineList;
 import com.superhumans.model.patient.Patient;
@@ -13,6 +14,7 @@ import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -21,6 +23,7 @@ import java.util.List;
 public class MedicineListServiceImpl implements MedicineService {
 
     MedicineListRepository medicineListRepository;
+    SHMedicineListBot notificationBot;
     ObjectMapper objectMapper;
 
 
@@ -41,19 +44,32 @@ public class MedicineListServiceImpl implements MedicineService {
 
     @SneakyThrows
     @Override
-    public void updateMedicineListById(MedicineList medicineList) {
+    public void updateMedicineListById(MedicineList medicineList, Patient patient) {
         ObjectWriter objectWriter = objectMapper.writer().withDefaultPrettyPrinter();
         String json = objectWriter.writeValueAsString(medicineList.getMedicineDetails());
         medicineListRepository.updateMedicineListById(medicineList, json);
+        notificationBot.sendNotification(
+                "✏️ Листок призначень оновлено! " +
+                        "\nПацієнт: " + patient.getName() +
+                        "\nПалата: " + patient.getRoomNumber() +
+                        "\nЛіжко: " + patient.getBedNumber() +
+                        "\nЛікуючий лікар: " + patient.getDoctor()
+        );
     }
 
     @SneakyThrows
     @Override
-    public void createNewMedicineList(MedicineList medicineList) {
+    public void createNewMedicineList(MedicineList medicineList, Patient patient) {
         ObjectWriter objectWriter = objectMapper.writer().withDefaultPrettyPrinter();
-        System.out.println(medicineList.getMedicineDetails());
         String json = objectWriter.writeValueAsString(medicineList.getMedicineDetails());
         medicineListRepository.createNewMedicineList(medicineList, json);
+        notificationBot.sendNotification(
+                "✏️ Створено новий листок призначень! " +
+                        "\nПацієнт: " + patient.getName() +
+                        "\nПалата: " + patient.getRoomNumber() +
+                        "\nЛіжко: " + patient.getBedNumber() +
+                        "\nЛікуючий лікар: " + patient.getDoctor()
+        );
     }
 
     @Override
@@ -87,8 +103,13 @@ public class MedicineListServiceImpl implements MedicineService {
     }
 
     @Override
-    public List<Patient> getAllInpatients() {
-        return medicineListRepository.getAllInpatients();
+    public List<Patient> getAllInpatients(Boolean order) {
+        return medicineListRepository.getAllInpatients(order);
+    }
+
+    @Override
+    public void generateDeDocument(Integer medicineListID, String documentDateTime) {
+        medicineListRepository.generateDeDocument(medicineListID, documentDateTime);
     }
 
 }

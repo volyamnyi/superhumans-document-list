@@ -8,6 +8,7 @@ import com.superhumans.exception.AppException;
 import com.superhumans.model.medicinelist.Medicine;
 import com.superhumans.model.medicinelist.MedicineDetails;
 import com.superhumans.model.medicinelist.MedicineList;
+import com.superhumans.model.patient.IdsAndDateTimes;
 import com.superhumans.model.patient.Patient;
 import com.superhumans.model.user.User;
 import lombok.AccessLevel;
@@ -26,7 +27,9 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -81,7 +84,8 @@ public class MedicineListRepository {
                 sql,
                 medicineListId,
                 medicineList.getMedicineListCreationUser(),
-                String.valueOf(medicineList.getMedicineListCreationDate()),
+                //String.valueOf(medicineList.getMedicineListCreationDate()),
+                LocalDateTime.now(),
                 json,
                 "Saved"
         );
@@ -169,7 +173,8 @@ public class MedicineListRepository {
             jdbcTemplate.update(
                     sql,
                     medicineList.getMedicineListCreationUser(),
-                    String.valueOf(medicineList.getMedicineListCreationDate()),
+                    //String.valueOf(medicineList.getMedicineListCreationDate()),
+                    LocalDateTime.now(),
                     json,
                     getCurrentLogin(),
                     medicineList.getMedicineListID()
@@ -225,7 +230,7 @@ public class MedicineListRepository {
                 return medicalListItem;
             }
         };
-        System.out.println(getCurrentLogin());
+
         List<MedicineDetails> result = jdbcTemplate.query("SELECT Status FROM MedicineListItem WHERE MedicineListRef = ?;", mapper, id);
         if (result.get(0).getStatus().equals("Saved") || result.get(0).getStatus().equals(getCurrentLogin())) {
             String sql = "UPDATE MedicineListItem SET Status = ? WHERE MedicineListRef = ?;";
@@ -260,7 +265,7 @@ public class MedicineListRepository {
             User user = (User) authentication.getPrincipal();
             return user.getLogin(); // Extract the `login` field
         }
-        return null; // Return null or throw an exception if the user is not authenticated
+        return null;
     }
 
     /**
@@ -287,7 +292,7 @@ public class MedicineListRepository {
         return jdbcTemplate.query(sql, mapper, query);
     }
 
-    public List<Patient> getAllInpatients() {
+    public List<Patient> getAllInpatients(Boolean order) {
 
         RowMapper<Patient> mapper = new RowMapper() {
 
@@ -312,7 +317,9 @@ public class MedicineListRepository {
             }
         };
 
-        return jdbcTemplate.query(
+        String ascDesc = order ? "ASC" : "DESC";
+
+        /*return jdbcTemplate.query(
                 "Select PatientID, PatientName," +
                         "PatientHistoryNumber," +
                         "PatientAddress," +
@@ -327,7 +334,53 @@ public class MedicineListRepository {
                         "left join venue v1 on v.VenueParentRef = v1.VenueID " +
                         "left join venue v2 on v1.VenueParentRef = v2.VenueID " +
                         "left join Users u on u.UserLogin = r.UserRef " +
-                        "where ResidenceSequence1Ref in (19);", mapper);
+                        "where ResidenceSequence1Ref in (19) ORDER BY PatientName " + ascDesc + ";", mapper);*/
+
+        List<Patient> patients = jdbcTemplate.query(
+                "Select PatientID, PatientName," +
+                        "PatientHistoryNumber," +
+                        "PatientAddress," +
+                        "PatientPhone," +
+                        "v2.VenueName AS VenueLevel2," +
+                        "v1.VenueName AS VenueLevel1," +
+                        "v.VenueName AS VenueLevel0," +
+                        "PatientSexRef," +
+                        "DATEDIFF(YEAR, PatientBirthDate, GETDATE()) as Age, PatientBirthDate, u.UserName AS Doctor from Patient " +
+                        "left join Residence r on PatientRef = PatientID and ResidenceStatusRef = N'PRG'" +
+                        "left join venue v on r.VenueRef = v.VenueID " +
+                        "left join venue v1 on v.VenueParentRef = v1.VenueID " +
+                        "left join venue v2 on v1.VenueParentRef = v2.VenueID " +
+                        "left join Users u on u.UserLogin = r.UserRef " +
+                        "where ResidenceSequence1Ref in (19) ORDER BY PatientName " + ascDesc + ";", mapper);
+
+        String editDatesSql = "SELECT mli.MedicineListItemEditDate, ml.PatientRef " +
+                "FROM MedicineListItem mli " +
+                "LEFT JOIN MedicineList ml ON mli.MedicineListRef = ml.MedicineListID";
+
+        RowMapper<IdsAndDateTimes> dateTimesMapper = new RowMapper<IdsAndDateTimes>() {
+            @Override
+            public IdsAndDateTimes mapRow(ResultSet rs, int rowNum) throws SQLException {
+                IdsAndDateTimes idsAndDateTimes = new IdsAndDateTimes();
+                idsAndDateTimes.setPatientId(rs.getObject("PatientRef", Integer.class));
+                idsAndDateTimes.setEditDateTime(rs.getObject("MedicineListItemEditDate", LocalDateTime.class));
+
+                return idsAndDateTimes;
+            }
+        };
+
+        List<IdsAndDateTimes> idDateTimes = jdbcTemplate.query(editDatesSql, dateTimesMapper);
+
+        //patients.forEach(p->p.s);
+        for (int i = 0; i < patients.size(); i++) {
+            for (int j = 0; j < idDateTimes.size(); j++) {
+                if (patients.get(i).getId().equals(idDateTimes.get(j).getPatientId())) {
+                    patients.get(i).getMedicineListEditDates().add(idDateTimes.get(j).getEditDateTime());
+                }
+            }
+        }
+
+        System.out.println(idDateTimes);
+        return patients;
     }
 
     /**
@@ -444,4 +497,34 @@ public class MedicineListRepository {
 
         jdbcTemplate.update(sql, id, id);
     }
+
+    public void addNewChatId(Long chatId) {
+        String sql = "INSERT INTO SH_MedicineListBotChatIds (chat_id) VALUES (?);";
+
+        String finalSql = sql;
+        jdbcTemplate.update(
+                connection -> {
+                    PreparedStatement ps = connection.prepareStatement(finalSql);
+                    ps.setLong(1, chatId);
+                    return ps;
+                }
+        );
+    }
+
+    public List<Long> getAllChatIds() {
+        String sql = "SELECT chat_id from SH_MedicineListBotChatIds";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getLong("chat_id"));
+    }
+
+    public void generateDeDocument(Integer medicineListID, String documentDateTime) {
+        System.out.println(documentDateTime);
+        String sql = "UPDATE MedicineList SET MakeDEDocument = ? WHERE MedicineListID = ?;";
+        jdbcTemplate.update(
+                sql,
+                documentDateTime,
+                medicineListID
+        );
+    }
+
+
 }

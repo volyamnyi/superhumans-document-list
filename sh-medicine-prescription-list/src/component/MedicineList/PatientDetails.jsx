@@ -1,22 +1,24 @@
-import React, {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import { searchPatients } from "../../utils/ApiFunctions";
 import { getPatientById } from "../../utils/ApiFunctions";
-import {
-  getAllDocumentsByPatientId,
-  getAllInpatients,
-} from "../../utils/ApiFunctions";
+import { getAllDocumentsByPatientId } from "../../utils/ApiFunctions";
 import { deleteDocumentById } from "../../utils/ApiFunctions";
 import { Link, useParams } from "react-router-dom";
 import { isEmpty } from "../../utils/Functions";
 import { formatDate } from "../../utils/Functions";
 
 import ListDetails from "./ListDetails";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import ApproveModal from "./ApproveModal";
 
 export default function PatientDetails() {
   const { id } = useParams();
   const [patientStateId, setPatientStateId] = useState(id);
   const ROLE = localStorage.getItem("businessRole");
 
+  const [showApproveModal, setShowApproveModal] = useState(false);
+  
   const [documentsList, setDocumentsLList] = useState([
     {
       medicineListID: null,
@@ -113,26 +115,32 @@ export default function PatientDetails() {
   }
 
   async function handleDeleteDocument() {
-    await deleteDocumentById(selectDocument.split("|")[0]);
-    const data = await getAllDocumentsByPatientId(patient.id);
+      await deleteDocumentById(selectDocument.split("|")[0]);
+      const data = await getAllDocumentsByPatientId(patient.id);
 
-    setDocumentsLList(data);
+      setDocumentsLList(data);
 
-    handleSelectDocument(
-      documentsList[localStorage.getItem("selectedIndex") - 1].medicineListID +
-        "|" +
-        documentsList[localStorage.getItem("selectedIndex") - 1].patientRef,
-      localStorage.getItem("selectedIndex")
-    );
+      handleSelectDocument(
+        documentsList[localStorage.getItem("selectedIndex") - 1]
+          .medicineListID +
+          "|" +
+          documentsList[localStorage.getItem("selectedIndex") - 1].patientRef,
+        localStorage.getItem("selectedIndex")
+      );
 
-    const newSelectedDocumentArr = Array(data.length).fill(false);
-    console.log(localStorage.getItem("selectedIndex"));
-    newSelectedDocumentArr[localStorage.getItem("selectedIndex") - 1] = true;
-    setSelectedDocument(newSelectedDocumentArr);
+      const newSelectedDocumentArr = Array(data.length).fill(false);
+      newSelectedDocumentArr[localStorage.getItem("selectedIndex") - 1] = true;
+      setSelectedDocument(newSelectedDocumentArr);
   }
 
   return (
     <>
+      {showApproveModal && (
+        <ApproveModal
+          setShowApproveModal={setShowApproveModal}
+          handleDeleteDocument={handleDeleteDocument}
+        />
+      )}
       <div>
         <div>
           <meta charSet="UTF-8" />
@@ -173,6 +181,11 @@ export default function PatientDetails() {
             </div>
           </div>
           <div className="content">
+            {
+              <Link style={{ color: "#007bff", fontWeight: "bold" }} to={`/`}>
+                Головна
+              </Link>
+            }
             {patient.id && (
               <>
                 <div className="profile">
@@ -251,15 +264,19 @@ export default function PatientDetails() {
                     <div className="document-preview-container">
                       <div className="buttons">
                         <Link to={`/listdetails/${selectDocument}`}>
-                          <button className="btn">Редагуваги</button>
+                          <button className="edit-button">Редагуваги</button>
                         </Link>
-
-                        <button
-                          className="btn red"
-                          onClick={() => handleDeleteDocument(selectDocument)}
+                        <div
+                          className="trash-ico-container"
+                          style={{ marginTop: "3px" }}
                         >
-                          X
-                        </button>
+                          <FontAwesomeIcon
+                            icon={faTrash}
+                            onClick={() => {
+                              setShowApproveModal(true);
+                            }}
+                          />
+                        </div>
                       </div>
                       <div style={{ scale: 0.7 }} className="scroll-both">
                         {

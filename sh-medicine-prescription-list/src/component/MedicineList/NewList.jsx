@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import DocumentHeader from "./DocumentHeader";
 import List from "./List";
 
@@ -21,6 +21,7 @@ import {
   formatDate,
   handleSearchedMedicineClick,
   handleCurrentRowClick,
+  handleMedicineRegimeChange,
 } from "../../utils/Functions";
 
 import { useParams } from "react-router-dom";
@@ -35,7 +36,7 @@ export default function NewList() {
     patientRef: id,
     documentName: "Листок лікарських призначень (стаціонар)",
     medicineListCreationUser: `${
-      localStorage.getItem("firstName") + " " + localStorage.getItem("lastName")
+      localStorage.getItem("sub")
     }`,
     medicineListCreationDate: new Date(),
     medicineDetails: [],
@@ -57,7 +58,7 @@ export default function NewList() {
   useEffect(() => {
     if (triggerSubmit) {
       (async () => {
-        const response = await addNewMedicineList(medicineList);
+        const response = await addNewMedicineList(medicineList, JSON.parse(localStorage.getItem("patient")));
         if (response.status === 201) {
           alert("Success");
         } else {
@@ -89,6 +90,7 @@ export default function NewList() {
       <DocumentHeader id={id} />
       <List
         isNew={true}
+        patientId={id}
         handleItemChange={handleItemChange}
         andleDetailChange={handleDetailChange}
         handleAddNewMedicineItem={handleAddNewMedicineItem}
@@ -120,6 +122,7 @@ export default function NewList() {
         showSuggestions={showSuggestions}
         triggerSearchedMedicine={triggerSearchedMedicine}
         searchedMedicine={searchedMedicine}
+        handleMedicineRegimeChange={handleMedicineRegimeChange}
       />
     </>
   );

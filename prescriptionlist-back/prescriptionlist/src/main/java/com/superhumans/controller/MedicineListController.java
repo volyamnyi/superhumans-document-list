@@ -1,17 +1,21 @@
 package com.superhumans.controller;
 
+import com.superhumans.config.SHMedicineListBot;
 import com.superhumans.exception.AppException;
 import com.superhumans.model.medicinelist.Medicine;
 import com.superhumans.model.medicinelist.MedicineList;
 import com.superhumans.model.patient.Patient;
+import com.superhumans.model.payload.Payload;
 import com.superhumans.service.MedicineService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -28,7 +32,7 @@ public class MedicineListController {
     /**
      * Сервіс для обробки логіки, пов’язаної зі списками ліків.
      */
-    MedicineService medicineService;
+    final MedicineService medicineService;
 
     /**
      * Отримує всі списки ліків.
@@ -77,8 +81,10 @@ public class MedicineListController {
     @SneakyThrows
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createNewMedicineList(@RequestBody MedicineList medicineList) {
-        medicineService.createNewMedicineList(medicineList);
+    public void createNewMedicineList(@RequestBody Payload payload) {
+        MedicineList medicineList = payload.getMedicineList();
+        Patient patient = payload.getPatient();
+        medicineService.createNewMedicineList(medicineList, patient);
     }
 
     /**
@@ -88,13 +94,16 @@ public class MedicineListController {
      */
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public void updateMedicineList(@RequestBody MedicineList medicineList) {
-        medicineService.updateMedicineListById(medicineList);
+    public void updateMedicineList(@RequestBody Payload payload) {
+        MedicineList medicineList = payload.getMedicineList();
+        Patient patient = payload.getPatient();
+        medicineService.updateMedicineListById(medicineList, patient);
     }
 
     /**
      * Оновлює статус списку ліків за його ID.
      * Статус у контексті чи редагується на даний момент користувачем
+     *
      * @param id     ідентифікатор списку
      * @param status новий статус
      */
@@ -155,11 +164,10 @@ public class MedicineListController {
         throw new AppException("Пацієнта з " + id + " не знайдено", HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/patient")
+    @GetMapping("/patient/sort/{order}")
     @ResponseStatus(HttpStatus.OK)
-    public List<Patient> getAllInpatients() {
-        System.out.println("Alarm");
-        return medicineService.getAllInpatients();
+    public List<Patient> getAllInpatients(@PathVariable("order") Boolean order) {
+        return medicineService.getAllInpatients(order);
     }
 
     /**
@@ -176,6 +184,10 @@ public class MedicineListController {
         throw new AppException("Документу з " + id + " не знайдено", HttpStatus.NOT_FOUND);
     }
 
-
+    @GetMapping("/generatedoc")
+    @ResponseStatus(HttpStatus.OK)
+    public void generateDeDocument(@RequestParam Integer medicineListID, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) String documentDateTime) {
+        medicineService.generateDeDocument(medicineListID, documentDateTime);
+    }
 
 }

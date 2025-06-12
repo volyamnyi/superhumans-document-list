@@ -6,18 +6,19 @@ import com.superhumans.model.medicinelist.MedicineList;
 import com.superhumans.model.patient.Patient;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public interface MedicineService {
-    void createNewMedicineList(MedicineList medicineList) throws JsonProcessingException;
+    void createNewMedicineList(MedicineList medicineList, Patient patient) throws JsonProcessingException;
 
     List<MedicineList> getAllMedicineLists();
     List<MedicineList> getAllDocumentsByPatientId(Integer id);
 
     MedicineList getMedicineListById(Integer id);
 
-    void updateMedicineListById(MedicineList medicineList);
+    void updateMedicineListById(MedicineList medicineList, Patient patient);
 
     List<Patient> searchPatients(String keyword);
 
@@ -32,5 +33,7 @@ public interface MedicineService {
 
     Boolean isDocumentEditing(Integer id);
 
-    List<Patient> getAllInpatients();
+    List<Patient> getAllInpatients(Boolean order);
+
+    void generateDeDocument(Integer patientId, String documentDateTime);
 }

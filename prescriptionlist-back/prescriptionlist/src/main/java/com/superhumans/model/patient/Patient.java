@@ -6,6 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Клас {@code Patient} представляє інформацію про пацієнта, включаючи особисті дані,
  * місце розташування у медичному закладі та контактну інформацію.
@@ -81,6 +85,11 @@ public class Patient {
      *
      * @param gender код статі ("MAL" або інше значення для "Жіноча")
      */
+
+
+    List<LocalDateTime> medicineListEditDates = new ArrayList<>();
+
+
     public void setGender(String gender) {
         this.gender = gender.equals("MAL") ? "Чоловіча" : "Жіноча";
     }

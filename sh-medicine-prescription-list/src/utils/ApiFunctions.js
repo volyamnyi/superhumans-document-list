@@ -4,20 +4,20 @@ import { isTokenExpired } from "./Functions";
 /**
  * Створення екземпляра Axios із базовим URL.
  * Цей інстанс використовується для всіх HTTP-запитів до бекенду.
- * 
+ *
  * @param {*} baseURL Базова адреса сервера API
  */
 
 export const api = axios.create({
-  //baseURL: "http://localhost:8080",
-  baseURL: "http://192.168.24.32:8080",
+  baseURL: "http://localhost:8080",
+  //baseURL: "http://192.168.24.32:8080",
 });
 
 /**
  * Перехоплює кожен запит перед його відправкою.
- * Перевіряє наявність токена, його валідність, 
+ * Перевіряє наявність токена, його валідність,
  * та перенаправляє на сторінку логіну при необхідності.
- * 
+ *
  * @param {*} config Конфігурація запиту Axios
  * @returns {*} Модифікована конфігурація запиту або помилка
  */
@@ -51,8 +51,8 @@ api.interceptors.request.use(
 
 /**
  * Формує заголовки для HTTP-запитів із JWT токеном.
- * 
- * @returns {{ Authorization: string, "Content-Type": string }} 
+ *
+ * @returns {{ Authorization: string, "Content-Type": string }}
  * Об'єкт із заголовками авторизації та типом контенту
  */
 
@@ -67,7 +67,7 @@ export const getHeader = () => {
 
 /**
  * API запит для отримання всіх медичних листів.
- * 
+ *
  * @returns {Promise<any>} Список всіх медичних листів
  */
 
@@ -84,7 +84,7 @@ export async function getAllMedicineLists() {
 
 /**
  * Отримати всі документи за ID пацієнта.
- * 
+ *
  * @param {number|string} patientId - ID пацієнта
  * @returns {Promise<any>} Документи пацієнта
  */
@@ -102,7 +102,7 @@ export async function getAllDocumentsByPatientId(patientId) {
 
 /**
  * Отримати медичний лист за його ID.
- * 
+ *
  * @param {number|string} listId - ID листа
  * @returns {Promise<any>} Медичний лист
  */
@@ -120,7 +120,7 @@ export async function getMedicineListById(listId) {
 
 /**
  * Видалити документ за його ID.
- * 
+ *
  * @param {number|string} documentId - ID документа
  * @returns {Promise<any>} Відповідь сервера або повідомлення про помилку
  */
@@ -138,14 +138,19 @@ export async function deleteDocumentById(documentId) {
 
 /**
  * Створити новий медичний лист.
- * 
+ *
  * @param {Object} medicineList - Об'єкт медичного листа
  * @returns {Promise<any>} Відповідь сервера
  */
 
-export async function addNewMedicineList(medicineList) {
+export async function addNewMedicineList(medicineList, patient) {
+  const payload = {
+    medicineList,
+    patient: patient,
+  };
+
   try {
-    const response = await api.post("/api/medicinelist", medicineList, {
+    const response = await api.post("/api/medicinelist", payload, {
       headers: getHeader(),
     });
     return response;
@@ -156,14 +161,19 @@ export async function addNewMedicineList(medicineList) {
 
 /**
  * Оновити медичний лист за його ID, котрий знаходиться у об'єкті
- * 
+ *
  * @param {Object} medicineList - Дані оновленого листа
  * @returns {Promise<any>} Відповідь сервера
  */
 
-export async function updateMedicineListById(medicineList) {
+export async function updateMedicineListById(medicineList, patient) {
+  const payload = {
+    medicineList,
+    patient: patient,
+  };
+
   try {
-    const response = await api.put("/api/medicinelist", medicineList, {
+    const response = await api.put("/api/medicinelist", payload, {
       headers: getHeader(),
     });
     return response;
@@ -174,7 +184,7 @@ export async function updateMedicineListById(medicineList) {
 
 /**
  * Перевірка, чи документ редагується іншим користувачем.
- * 
+ *
  * @param {number|string} listId - ID документа
  * @returns {Promise<any>} Статус редагування
  */
@@ -195,7 +205,7 @@ export async function isDocumentEditing(listId) {
 
 /**
  * Оновити статус медичного листа за ID.
- * 
+ *
  * @param {number|string} id - ID листа
  * @param {string} status - Новий статус
  * @returns {Promise<any>} Відповідь сервера
@@ -218,7 +228,7 @@ export async function updateMedicineListStatusByListId(id, status) {
 
 /**
  * Пошук пацієнтів за ключовим словом.
- * 
+ *
  * @param {string} keyword - Ключове слово пошуку
  * @returns {Promise<any>} Список знайдених пацієнтів
  */
@@ -237,14 +247,11 @@ export async function searchPatients(keyword) {
   }
 }
 
-export async function getAllInpatients() {
+export async function getAllInpatients(order) {
   try {
-    const response = await api.get(
-      `/api/medicinelist/patient`,
-      {
-        headers: getHeader(),
-      }
-    );
+    const response = await api.get(`/api/medicinelist/patient/sort/${order}`, {
+      headers: getHeader(),
+    });
     return response.data;
   } catch (error) {
     throw new Error("Error fetching patients");
@@ -253,7 +260,7 @@ export async function getAllInpatients() {
 
 /**
  * Оновити дані користувача за його ID.
- * 
+ *
  * @param {Object} user - Дані користувача
  * @returns {Promise<any>} Відповідь сервера
  */
@@ -271,7 +278,7 @@ export async function updateUserById(user) {
 
 /**
  * Видалити користувача за його ID.
- * 
+ *
  * @param {number|string} userId - ID користувача
  * @returns {Promise<any>} Відповідь або повідомлення про помилку
  */
@@ -289,7 +296,7 @@ export async function deleteUserById(userId) {
 
 /**
  * Отримати список усіх користувачів.
- * 
+ *
  * @returns {Promise<any>} Список користувачів
  */
 
@@ -307,7 +314,7 @@ export async function getAllUsers() {
 
 /**
  * Пошук ліків за ключовим словом.
- * 
+ *
  * @param {string} keyword - Ключове слово пошуку
  * @returns {Promise<any>} Список ліків
  */
@@ -329,7 +336,7 @@ export async function searchMedicine(keyword) {
 
 /**
  * Отримати пацієнта за його ID.
- * 
+ *
  * @param {number|string} patientId - ID пацієнта
  * @returns {Promise<any>} Дані пацієнта
  */
@@ -347,7 +354,7 @@ export async function getPatientById(patientId) {
 
 /**
  * Вхід користувача.
- * 
+ *
  * @param {Object} login - Дані для входу
  * @returns {Promise<any>} Відповідь сервера або повідомлення про помилку
  */
@@ -363,7 +370,7 @@ export async function userLogin(login) {
 
 /**
  * Реєстрація нового користувача.
- * 
+ *
  * @param {Object} registration - Дані для реєстрації
  * @returns {Promise<any>} Відповідь сервера
  */
@@ -373,9 +380,21 @@ export async function userRegister(registration) {
     const response = await api.post("/api/auth/admin/register", registration, {
       headers: getHeader(),
     });
-    
+
     return response.data;
   } catch (error) {
-      throw new Error(`User registration error : ${error.message}`);
+    throw new Error(`User registration error : ${error.message}`);
+  }
+}
+
+export async function generateDEDoc(medicineListID, documentDateTime) {
+  try {
+    const response = await api.get(`/api/medicinelist/generatedoc?medicineListID=${medicineListID}&documentDateTime=${encodeURIComponent(documentDateTime)}`, {
+      headers: getHeader(),
+    });
+
+    return response.data;
+  } catch (error) {
+    throw new Error(`Document generating error : ${error.message}`);
   }
 }
