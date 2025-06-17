@@ -82,9 +82,10 @@ export default function List({
     const diffInTime = endDate - current;
     const diffInDays = diffInTime / (1000 * 60 * 60 * 24);
 
-   
     if (diffInDays > 7) {
-      alert("Різниця між кінцевою і початковою датами не повинна бути більшою ніж 7 днів")
+      alert(
+        "Різниця між кінцевою і початковою датами не повинна бути більшою ніж 7 днів"
+      );
       return;
     }
 
@@ -117,7 +118,11 @@ export default function List({
       setStartDate2(medicineDetails[0]?.medicineDetails[0]?.date);
     }
     if (!endDate2) {
-      setEndDate2(medicineDetails[0]?.medicineDetails[ medicineDetails[0]?.medicineDetails.length - 1]?.date);
+      setEndDate2(
+        medicineDetails[0]?.medicineDetails[
+          medicineDetails[0]?.medicineDetails.length - 1
+        ]?.date
+      );
     }
   }, [medicineDetails]);
 
@@ -132,7 +137,7 @@ export default function List({
     }
   }, [startDate, endDate]);
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (startDate2 && endDate2 && new Date(startDate2) <= new Date(endDate2)) {
       const range = getDatesInRange(startDate2, endDate2);
       setDateRange2(range);
@@ -141,7 +146,7 @@ export default function List({
       setDateRange2([]);
       handleRangeChange([]);
     }
-  }, [startDate2, endDate2]);
+  }, [startDate2, endDate2]);*/
 
   function getDatePicker() {
     return (
@@ -151,11 +156,17 @@ export default function List({
           <input
             type="date"
             value={startDate}
-            onChange={(e) => setStartDate(e.target.value)}
+            onChange={(e) => {
+              setStartDate(e.target.value);
+              const date = new Date(e.target.value);
+              date.setDate(date.getDate() + 6);
+              const result = formatDateToISO(date);
+              setEndDate(result);
+            }}
             className="border p-1 rounded"
           />
         </label>
-        <label>
+        {/*<label>
           До:&nbsp;&nbsp;
           <input
             type="date"
@@ -163,7 +174,7 @@ export default function List({
             onChange={(e) => setEndDate(e.target.value)}
             className="border p-1 rounded"
           />
-        </label>
+        </label>*/}
         <br></br>
       </div>
     );
@@ -198,7 +209,7 @@ export default function List({
   function medicineDatePicker() {
     return (
       <>
-        <h3 className="date-picker-heading">Оберіть дати</h3>
+        <h3 className="date-picker-heading">Оберіть початкову дату</h3>
         {getDatePicker()}
       </>
     );
@@ -228,11 +239,6 @@ export default function List({
           )
         }
       >
-        {
-          <button type="button" onClick={handleGenerateDEDoc}>
-            Generate DE doc
-          </button>
-        }
         <div className="medicine-container">
           <div className="marks">
             Позначення: &nbsp;
@@ -268,6 +274,7 @@ export default function List({
               <textarea
                 value={medicineDetails[0]?.regime}
                 className=""
+                disabled={isScaled}
                 onChange={(e) => {
                   !isScaled &&
                     ROLE === "DOCTOR" &&
@@ -280,7 +287,7 @@ export default function List({
               ></textarea>
             )}
 
-            <div className="date-picker-container">
+            {/*<div className="date-picker-container">
               {!isScaled && showRegime && getDatePicker2()}
               {!isScaled && showRegime && (
                 <div className="arrows-container">
@@ -316,7 +323,7 @@ export default function List({
                   />
                 </div>
               )}
-            </div>
+            </div>*/}
           </div>
           <div className="medicine-row-container">
             <div className="medicine-date-picker">
@@ -338,30 +345,6 @@ export default function List({
                 ) : (
                   <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                 )}
-
-                <div className="medicine-method">
-                  <select
-                    disabled={isScaled}
-                    value={medicineRow.medicineMethod}
-                    onChange={(e) => {
-                      !isScaled &&
-                        ROLE === "DOCTOR" &&
-                        handleMedicineMethodChange(
-                          e,
-                          medicineRow.id,
-                          "medicineMethod",
-                          setMedicineListItem
-                        );
-                    }}
-                  >
-                    <option value="ВВК">ВВК</option>
-                    <option value="ВВС">ВВС</option>
-                    <option value="ВМ">ВМ</option>
-                    <option value="ПШ">ПШ</option>
-                    <option value="Пер">Пер</option>
-                    <option value="" />
-                  </select>
-                </div>
                 <div className="medicine-name">
                   <textarea
                     style={{ fontWeight: "bold" }}
@@ -369,6 +352,7 @@ export default function List({
                     ref={textareaRef}
                     key={i}
                     type="text"
+                    disabled={isScaled}
                     name="medicineName"
                     data-key={i}
                     onChange={(e) => {
@@ -425,6 +409,26 @@ export default function List({
                         ))}
                       </div>
                     )}
+                </div>
+                <div className="medicine-method">
+                  <textarea
+                    type="text"
+                    name="method"
+                    style={{ fontWeight: "bold" }}
+                    className="auto-resize-textarea"
+                    disabled={isScaled}
+                    value={medicineRow.medicineMethod}
+                    onChange={(e) => {
+                      !isScaled &&
+                        ROLE === "DOCTOR" &&
+                        handleMedicineMethodChange(
+                          e,
+                          medicineRow.id,
+                          "medicineMethod",
+                          setMedicineListItem
+                        );
+                    }}
+                  ></textarea>
                 </div>
                 {!isScaled && ROLE == "DOCTOR" && (
                   <button
@@ -519,7 +523,7 @@ export default function List({
                                           }}
                                         />
                                       </label>
-                                      <textarea
+                                      {/*<textarea
                                         style={{ fontWeight: "bold" }}
                                         type="text"
                                         name="medicineDose"
@@ -537,9 +541,8 @@ export default function List({
                                             );
                                         }}
                                         className="day-cell-dose-input"
-                                      ></textarea>
-                                      {
-                                        <input
+                                      ></textarea>*/}
+                                      {/*<input
                                           style={{ fontWeight: "bold" }}
                                           name="time"
                                           type="time"
@@ -570,8 +573,7 @@ export default function List({
                                                 setMedicineListItem
                                               );
                                           }}
-                                        />
-                                      }
+                                        />*/}
                                     </div>
                                   )
                                 )}
@@ -658,22 +660,28 @@ export default function List({
           </div>
         </div>
         {!isScaled && (
-          <button
-            className="save-button"
-            onSubmit={(e) =>
-              handleSubmit(
-                e,
-                setMedicineList,
-                setTriggerSubmit,
-                medicineDetails,
-                isNew,
-                `/patientdetails/${patientId}`,
-                navigate
-              )
-            }
-          >
-            Зберегти
-          </button>
+          <div className="save-generate-buttons-container">
+            <button
+              className="save-button"
+              onSubmit={(e) =>
+                handleSubmit(
+                  e,
+                  setMedicineList,
+                  setTriggerSubmit,
+                  medicineDetails,
+                  isNew,
+                  `/patientdetails/${patientId}`,
+                  navigate
+                )
+              }
+            >
+              Зберегти
+            </button>
+
+            <button type="button" className="save-button" onClick={handleGenerateDEDoc}>
+              Згенерувати в ДЕ
+            </button>
+          </div>
         )}
       </form>
     </>

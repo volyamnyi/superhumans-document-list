@@ -29,7 +29,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -167,18 +166,34 @@ public class MedicineListRepository {
             }
         };
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
         List<MedicineDetails> result = jdbcTemplate.query("SELECT Status FROM MedicineListItem WHERE MedicineListRef = ?;", mapper, medicineList.getMedicineListID());
         if (result.get(0).getStatus().equals(getCurrentLogin()) || result.get(0).getStatus().equals("Saved")) {
-            String sql = "UPDATE MedicineListItem SET MedicineListItemEditUser = ?, MedicineListItemEditDate = ?, MedicineDetails = ?, Status = ? WHERE MedicineListRef = ?;";
-            jdbcTemplate.update(
-                    sql,
-                    medicineList.getMedicineListCreationUser(),
-                    //String.valueOf(medicineList.getMedicineListCreationDate()),
-                    LocalDateTime.now(),
-                    json,
-                    getCurrentLogin(),
-                    medicineList.getMedicineListID()
-            );
+
+            if (user.getBusinessRole().equals("DOCTOR")) {
+                String sql = "UPDATE MedicineListItem SET MedicineListItemEditUser = ?, MedicineListItemEditDate = ?, MedicineDetails = ?, Status = ? WHERE MedicineListRef = ?;";
+                jdbcTemplate.update(
+                        sql,
+                        medicineList.getMedicineListCreationUser(),
+                        //String.valueOf(medicineList.getMedicineListCreationDate()),
+                        LocalDateTime.now(),
+                        json,
+                        getCurrentLogin(),
+                        medicineList.getMedicineListID()
+                );
+            } else {
+                String sql = "UPDATE MedicineListItem SET MedicineListItemEditUser = ?, MedicineDetails = ?, Status = ? WHERE MedicineListRef = ?;";
+                jdbcTemplate.update(
+                        sql,
+                        medicineList.getMedicineListCreationUser(),
+                        //String.valueOf(medicineList.getMedicineListCreationDate()),
+                        json,
+                        getCurrentLogin(),
+                        medicineList.getMedicineListID()
+                );
+            }
         } else {
             throw new AppException("Документ зараз редагується іншим користувачем", HttpStatus.CONFLICT);
         }
@@ -353,6 +368,7 @@ public class MedicineListRepository {
                         "left join Users u on u.UserLogin = r.UserRef " +
                         "where ResidenceSequence1Ref in (19) ORDER BY PatientName " + ascDesc + ";", mapper);
 
+
         String editDatesSql = "SELECT mli.MedicineListItemEditDate, ml.PatientRef " +
                 "FROM MedicineListItem mli " +
                 "LEFT JOIN MedicineList ml ON mli.MedicineListRef = ml.MedicineListID";
@@ -370,7 +386,6 @@ public class MedicineListRepository {
 
         List<IdsAndDateTimes> idDateTimes = jdbcTemplate.query(editDatesSql, dateTimesMapper);
 
-        //patients.forEach(p->p.s);
         for (int i = 0; i < patients.size(); i++) {
             for (int j = 0; j < idDateTimes.size(); j++) {
                 if (patients.get(i).getId().equals(idDateTimes.get(j).getPatientId())) {
@@ -379,7 +394,6 @@ public class MedicineListRepository {
             }
         }
 
-        System.out.println(idDateTimes);
         return patients;
     }
 

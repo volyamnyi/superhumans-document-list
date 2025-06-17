@@ -6,12 +6,15 @@ import com.superhumans.config.SHMedicineListBot;
 import com.superhumans.model.medicinelist.Medicine;
 import com.superhumans.model.medicinelist.MedicineList;
 import com.superhumans.model.patient.Patient;
+import com.superhumans.model.user.User;
 import com.superhumans.repository.MedicineListRepository;
 import com.superhumans.service.MedicineService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -45,16 +48,23 @@ public class MedicineListServiceImpl implements MedicineService {
     @SneakyThrows
     @Override
     public void updateMedicineListById(MedicineList medicineList, Patient patient) {
+
+
         ObjectWriter objectWriter = objectMapper.writer().withDefaultPrettyPrinter();
         String json = objectWriter.writeValueAsString(medicineList.getMedicineDetails());
         medicineListRepository.updateMedicineListById(medicineList, json);
-        notificationBot.sendNotification(
-                "✏️ Листок призначень оновлено! " +
-                        "\nПацієнт: " + patient.getName() +
-                        "\nПалата: " + patient.getRoomNumber() +
-                        "\nЛіжко: " + patient.getBedNumber() +
-                        "\nЛікуючий лікар: " + patient.getDoctor()
-        );
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+
+        if (!user.getBusinessRole().equals( "NURSE"))
+            notificationBot.sendNotification(
+                    "✏️ Листок призначень оновлено! " +
+                            "\nПацієнт: " + patient.getName() +
+                            "\nПалата: " + patient.getRoomNumber() +
+                            "\nЛіжко: " + patient.getBedNumber() +
+                            "\nЛікуючий лікар: " + patient.getDoctor()
+            );
     }
 
     @SneakyThrows

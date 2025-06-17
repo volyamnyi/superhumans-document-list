@@ -26,7 +26,7 @@ input::-webkit-inner-spin-button {
   margin-bottom: 0;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  width: fit-content;
+  width: 84.8%;
 }
 
 .medicine-header-container {
@@ -93,14 +93,14 @@ input::-webkit-inner-spin-button {
 }*/
 
 .medicine-row input {
-  border: 1px solid #ccc;
+  border: 1px solid #000;
 }
 
 .medicine-date-container {
   margin-left: 300px;
 }
 .medicine-date {
-  border: 1px solid #ccc;
+  border: 1px solid #000;
 }
 
 .medicine-container,
@@ -132,12 +132,12 @@ input::-webkit-inner-spin-button {
   column-gap: 5px;
 }
 
-.marks *{
+.marks * {
   font-weight: bold;
 }
 .medicine-regime-container {
   display: flex;
-  margin-left: 80px;
+  margin-left: 30px;
 }
 
 .date-picker-container {
@@ -176,14 +176,15 @@ input::-webkit-inner-spin-button {
 .medicine-name {
   width: 179px;
   overflow: hidden;
-  margin-right: 11px;
+  margin-right: 3px;
   margin-left: 10px;
 }
 
 .fill-all-button {
   height: 30px;
   width: 50px;
-  margin-right: 10px;
+  margin-right: 5px;
+  margin-left: 5px;
   font-size: 9px;
   background-color: #fff !important;
   color: #f2744d !important;
@@ -221,7 +222,7 @@ input::-webkit-inner-spin-button {
 
 .medicine-date,
 .day-cells-container {
-  width: 241px;
+  width: 120px;
 }
 .day-cells-container {
   margin-right: -10px;
@@ -240,7 +241,8 @@ input::-webkit-inner-spin-button {
 
 .plus,
 button[type="button"],
-.save-button,.edit-button {
+.save-button,
+.edit-button {
   padding: 1px 3px;
   border-radius: 4px;
   background-color: #fff;
@@ -251,12 +253,12 @@ button[type="button"],
   border: 1px solid #f2744d;
 }
 
-.save-button:hover,.edit-button:hover {
+.save-button:hover,
+.edit-button:hover {
   color: #fff;
   background-color: #f2744d;
 }
 
- 
 form {
   flex-direction: column;
 }
@@ -265,6 +267,8 @@ form {
   border-radius: 0.5px;
   width: 64px;
   height: 32px;
+  margin-top: 5px;
+  margin-left: 30px;
 }
 
 .add-button:hover {
@@ -274,7 +278,7 @@ form {
 
 .save-button {
   margin-left: 20px;
-  width: 64px;
+
   height: 32px;
 }
 
@@ -308,8 +312,8 @@ form {
 }
 
 .day-period > div {
-  width: 60px;
-  border: 1px solid #ccc;
+  width: 30px;
+  border: 1px solid #000;
   border-bottom: none;
   border-left: none;
 }
@@ -319,7 +323,7 @@ form {
 }
 
 .day-cell-input-label {
-  border: 1px solid #ccc;
+  border: 1px solid #000;
 }
 .day-cell-input {
   visibility: hidden;
@@ -383,7 +387,7 @@ body {
   background-color: #add8e6;
   position: fixed;
   padding: 10px 0;
-  border-right: 1px solid #ccc;
+  border-right: 1px solid #000;
   z-index: 10;
 }
 .sidebar .search-container {
@@ -528,73 +532,73 @@ body {
 
 /*Modal begin*/
 .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: rgba(211, 211, 211, 0.9); /* Light gray with some opacity */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(211, 211, 211, 0.9); /* Light gray with some opacity */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
 
-    /* Modal box */
-    .modal {
-      background: #fff;
-      padding: 30px 20px;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      text-align: center;
-      width: 400px;
-      max-width: 90%;
-    }
+/* Modal box */
+.modal {
+  background: #fff;
+  padding: 30px 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 400px;
+  max-width: 90%;
+}
 
-    .modal h2 {
-      margin: 0 0 10px;
-      font-size: 20px;
-    }
+.modal h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
 
-    .modal p {
-      color: #f44336;
-      margin-bottom: 25px;
-      font-size: 14px;
-    }
+.modal p {
+  color: #f44336;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
 
-    .buttons-modal {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-    }
+.buttons-modal {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
 
-    .buttons-modal button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-    }
+.buttons-modal button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
 
-    .cancel-btn {
-      background-color: #f97362 !important;
-      color: white !important;
-    }
+.cancel-btn {
+  background-color: #f97362 !important;
+  color: white !important;
+}
 
-    .delete-btn {
-      background-color: transparent;
-      color: #f97362;
-      border: 1px solid #f97362;
-    }
+.delete-btn {
+  background-color: transparent;
+  color: #f97362;
+  border: 1px solid #f97362;
+}
 
-    .delete-btn:hover {
-      background-color: #f97362;
-      color: white;
-    }
+.delete-btn:hover {
+  background-color: #f97362;
+  color: white;
+}
 
-    .cancel-btn:hover {
-      opacity: 0.9;
-    }
+.cancel-btn:hover {
+  opacity: 0.9;
+}
 /*Modal end*/
 .blink_me {
   animation: blinker 2s linear infinite;
