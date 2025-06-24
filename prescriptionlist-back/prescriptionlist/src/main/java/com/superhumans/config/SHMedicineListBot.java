@@ -56,6 +56,7 @@ public class SHMedicineListBot extends TelegramLongPollingBot {
     }
 
     public void sendNotification(String messageText) {
+        chatIds = new HashSet<>(medicineListRepository.getAllChatIds());
         for (Long chatId : chatIds) {
             sendMessage(chatId, messageText);
         }
