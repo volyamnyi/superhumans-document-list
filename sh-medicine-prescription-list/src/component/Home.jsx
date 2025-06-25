@@ -55,6 +55,7 @@ export default function Home() {
   });
 
   const [patients, setPatients] = useState([]);
+  const [localSearchedPatients, setLocalSearchedPatients] = useState([]);
   const [patientsDocuments, setPatientsDocuments] = useState([]);
   //console.log(patients)
 
@@ -128,6 +129,21 @@ export default function Home() {
     }
   };
 
+  const handleLocalSearchPatientsInputChange = (event) => {
+    const value = event.target.value;
+
+    setPatientName(event.target.value);
+    if (!isEmpty(value)) {
+      seachLocalPatients(value);
+    }
+  };
+
+  const seachLocalPatients = (value) => {
+    
+   const filteredPatients = patients.filter((patient) => patient.name.toLowerCase().includes(value.toLowerCase()));
+  setLocalSearchedPatients(filteredPatients);
+  };
+  
   async function handleSearchedPatientClick(event) {
     setShowSuggestions(false);
     const patientId = event.currentTarget.dataset.patientid;
@@ -174,24 +190,22 @@ export default function Home() {
   //const [highLightIds, setHighLightIds] = useState([]);
 
   const highLightIds = useMemo(() => {
-  const ids = [];
+    const ids = [];
 
-  patients.forEach((p) => {
-    p.medicineListEditDates.forEach((mled) => {
-      if (
-        isLessThanOneHour(
-          isoToTimestampSeconds(formatDate2(mled).toISOString())
-        )
-      ) {
-        ids.push(p.id);
-      }
+    patients.forEach((p) => {
+      p.medicineListEditDates?.forEach((mled) => {
+        if (
+          isLessThanOneHour(
+            isoToTimestampSeconds(formatDate2(mled).toISOString())
+          )
+        ) {
+          ids.push(p.id);
+        }
+      });
     });
-  });
 
-  return ids;
-}, [patients]);
-
-  console.log(highLightIds);
+    return ids;
+  }, [patients]);
 
   const presentationA = (
     <>
@@ -295,6 +309,34 @@ tr:nth-child(odd) {
             style={presentation === 1 ? { marginLeft: "0" } : {}}
           >
             <h2>Список пацієнтів</h2>
+            <div className="search-container">
+              <div>
+                <input
+                  type="text"
+                  placeholder="Пошук..."
+                  id="search"
+                  className="local-patients-search-input"
+                  name="search"
+                  value={patientName}
+                  onChange={handleLocalSearchPatientsInputChange}
+                  autoComplete="off"
+                />
+                {!isEmpty(patientName) && showSuggestions && (
+                  <div className="searched-patients-dropdown">
+                    {searchedPatients.map((patient, i) => (
+                      <a
+                        onClick={handleSearchedPatientClick}
+                        data-patientid={patient.id}
+                        href="#"
+                        key={i}
+                      >
+                        {patient.name}
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
             <table>
               <thead>
                 <tr className="header">
@@ -304,10 +346,13 @@ tr:nth-child(odd) {
                   </th>
                   <th>Палата</th>
                   <th>Ліжко</th>
+                  <th>Лікар</th>
                 </tr>
               </thead>
               <tbody>
-                {patients.map((patient, i) => (
+                {//patients.map((patient, i) => (
+
+               !isEmpty(patientName)? localSearchedPatients.map((patient, i) => (
                   <tr
                     key={i}
                     style={
@@ -315,7 +360,9 @@ tr:nth-child(odd) {
                         ? { backgroundColor: "orange" }
                         : {}
                     }
-                    className={highLightIds.includes(patient.id) ? "blink_me" : ""}
+                    className={
+                      highLightIds.includes(patient.id) ? "blink_me" : ""
+                    }
                   >
                     <td>{patient.id}</td>
                     <td>
@@ -331,6 +378,35 @@ tr:nth-child(odd) {
                     </td>
                     <td>{patient.roomNumber}</td>
                     <td>{patient.bedNumber}</td>
+                    <td>{patient.doctor}</td>
+                  </tr>
+                )):patients.map((patient, i) => (
+                  <tr
+                    key={i}
+                    style={
+                      highLightIds.includes(patient.id)
+                        ? { backgroundColor: "orange" }
+                        : {}
+                    }
+                    className={
+                      highLightIds.includes(patient.id) ? "blink_me" : ""
+                    }
+                  >
+                    <td>{patient.id}</td>
+                    <td>
+                      {
+                        <Link
+                          data-patientid={patient.id}
+                          to={`/patientdetails/${patient.id}`}
+                          key={i}
+                        >
+                          {patient.name}
+                        </Link>
+                      }
+                    </td>
+                    <td>{patient.roomNumber}</td>
+                    <td>{patient.bedNumber}</td>
+                    <td>{patient.doctor}</td>
                   </tr>
                 ))}
               </tbody>
