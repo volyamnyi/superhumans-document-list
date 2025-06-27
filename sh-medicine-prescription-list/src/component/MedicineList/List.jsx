@@ -685,13 +685,16 @@ export default function List({
               Зберегти
             </button>
 
-            <button
-              type="button"
-              className="save-button"
-              onClick={handleGenerateDEDoc}
-            >
-              Згенерувати в ДЕ
-            </button>
+            {((localStorage.getItem("businessRole") == "NURSE" ||
+              localStorage.getItem("userRole") == "ADMIN") && (
+                <button
+                  type="button"
+                  className="save-button"
+                  onClick={handleGenerateDEDoc}
+                >
+                  Згенерувати в ДЕ
+                </button>
+              ))}
           </div>
         )}
       </form>
