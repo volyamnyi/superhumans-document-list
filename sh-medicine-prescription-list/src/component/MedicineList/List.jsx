@@ -62,8 +62,15 @@ export default function List({
     }
   }
 
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
+  const [endDate, setEndDate] = useState(() => {
+    const today = new Date();
+    const futureDate = new Date();
+    futureDate.setDate(today.getDate() + 6);
+    return futureDate.toISOString().split("T")[0];
+  });
 
   const [startDate2, setStartDate2] = useState("");
   const [endDate2, setEndDate2] = useState("");
@@ -678,7 +685,11 @@ export default function List({
               Зберегти
             </button>
 
-            <button type="button" className="save-button" onClick={handleGenerateDEDoc}>
+            <button
+              type="button"
+              className="save-button"
+              onClick={handleGenerateDEDoc}
+            >
               Згенерувати в ДЕ
             </button>
           </div>
