@@ -44,6 +44,21 @@ export default function List({
   const navigate = useNavigate();
   const [showRegime, setShowRegime] = useState(!isNew);
 
+  const months = {
+    "01": "Січ",
+    "02": "Лют",
+    "03": "Бер",
+    "04": "Кві",
+    "05": "Тра",
+    "06": "Чер",
+    "07": "Лип",
+    "08": "Сер",
+    "09": "Вер",
+    10: "Жов",
+    11: "Лис",
+    12: "Гру",
+  };
+
   function handleAutoPlan(event) {
     const selectedValue = event.target.value;
     if (selectedValue === "autoPlan1") {
@@ -446,7 +461,14 @@ export default function List({
                         medicineDetails,
                         i,
                         setMedicineListItem,
-                        dateRange
+                        isNew
+                          ? dateRange
+                          : getDatesInRange(
+                              medicineList.medicineDetails[0].medicineDetails[0]
+                                .date,
+                              medicineList.medicineDetails[0].medicineDetails[6]
+                                .date
+                            )
                       )
                     }
                   >
@@ -464,7 +486,10 @@ export default function List({
                               key={j}
                               style={{ fontWeight: "bold" }}
                             >
-                              {details.date}
+                              {/*details.date.split("-").reverse().join("-")*/}
+                              {`${details.date.split("-")[2]} ${
+                                months[details.date.split("-")[1]]
+                              } ${details.date.split("-")[0]}`}
                               <div className="day-period">
                                 <div>Р</div>
                                 <div>Д</div>
@@ -644,7 +669,14 @@ export default function List({
                   handleAddNewMedicineItem2(
                     medicineList,
                     setMedicineListItem,
-                    dateRange,
+                    isNew
+                      ? dateRange
+                      : getDatesInRange(
+                          medicineList.medicineDetails[0].medicineDetails[0]
+                            .date,
+                          medicineList.medicineDetails[0].medicineDetails[6]
+                            .date
+                        ),
                     setShowRegime,
                     localStorage.getItem("addIndex")
                   );
@@ -685,16 +717,16 @@ export default function List({
               Зберегти
             </button>
 
-            {((localStorage.getItem("businessRole") == "NURSE" ||
+            {(localStorage.getItem("businessRole") == "NURSE" ||
               localStorage.getItem("userRole") == "ADMIN") && (
-                <button
-                  type="button"
-                  className="save-button"
-                  onClick={handleGenerateDEDoc}
-                >
-                  Згенерувати в ДЕ
-                </button>
-              ))}
+              <button
+                type="button"
+                className="save-button"
+                onClick={handleGenerateDEDoc}
+              >
+                Згенерувати в ДЕ
+              </button>
+            )}
           </div>
         )}
       </form>

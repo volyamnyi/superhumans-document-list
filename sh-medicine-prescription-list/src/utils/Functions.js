@@ -458,7 +458,7 @@ export function handleAddNewMedicineItem2(
 export function handleRemoveMedicineItem(setMedicineListItem, index) {
   setMedicineListItem((prevValue) => {
     const newArr = [...prevValue];
-  
+
     if (index > -1) {
       // only splice array when item is found
       newArr.splice(index, 1); // 2nd parameter means remove one item only
@@ -612,7 +612,7 @@ export async function handleSubmit(
 
   setTimeout(() => {
     isNew && navigate && redirectUrl && navigate(redirectUrl);
-  }, 500);
+  }, 1000);
 }
 
 /**
@@ -742,16 +742,16 @@ export function formatDate(list) {
 }
 
 export function formatDate2(list) {
-  if(list)
-  return new Date(
-    list[0],
-    list[1] - 1,
-    list[2],
-    list[3],
-    list[4],
-    list[5],
-    Math.floor(list[6] / 1_000_000)
-  );
+  if (list)
+    return new Date(
+      list[0],
+      list[1] - 1,
+      list[2],
+      list[3],
+      list[4],
+      list[5],
+      Math.floor(list[6] / 1_000_000)
+    );
 }
 
 export function formatDateToISO(date) {

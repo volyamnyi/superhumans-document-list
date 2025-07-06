@@ -209,6 +209,22 @@ export default function Home() {
 
   const presentationA = (
     <>
+    {/* Доробити !!!!! <label href="#"> Відділення реконструктивної хірургії<input
+        className="radio-input"
+        type="radio"
+        style={{ marginLeft: "10px", visibility:"hidden" }}
+        name="presentation"
+        value="presentation1"
+        onChange={handleSetPresentation}
+      /></label>
+      <label > Загальне <input
+        className="radio-input"
+        type="radio"
+        style={{ marginLeft: "10px", visibility:"hidden" }}
+        name="presentation"
+        value="presentation2"
+        onChange={handleSetPresentation}
+      /></label>*/}
       <input
         className="radio-input"
         type="radio"

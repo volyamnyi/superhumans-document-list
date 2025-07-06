@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import DocumentHeader from "./DocumentHeader";
 import List from "./List";
+import SuccessModal from "./SuccessModal";
 
 import { addNewMedicineList, searchMedicine } from "../../utils/ApiFunctions";
 
@@ -29,15 +30,15 @@ import { useParams } from "react-router-dom";
 export default function NewList() {
   const { id } = useParams();
 
+  const [isNew, setIsNew] = useState(true);
+
   const ROLE = localStorage.getItem("businessRole");
 
   const [medicineList, setMedicineList] = useState({
     medicineListID: 0,
     patientRef: id,
     documentName: "Листок лікарських призначень (стаціонар)",
-    medicineListCreationUser: `${
-      localStorage.getItem("sub")
-    }`,
+    medicineListCreationUser: `${localStorage.getItem("sub")}`,
     medicineListCreationDate: new Date(),
     medicineDetails: [],
   });
@@ -55,12 +56,18 @@ export default function NewList() {
     { id: "", name: "" },
   ]);
 
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
   useEffect(() => {
     if (triggerSubmit) {
       (async () => {
-        const response = await addNewMedicineList(medicineList, JSON.parse(localStorage.getItem("patient")));
+        const response = await addNewMedicineList(
+          medicineList,
+          JSON.parse(localStorage.getItem("patient"))
+        );
         if (response.status === 201) {
-          alert("Success");
+          //alert("Success");
+          setShowSuccessModal(true);
         } else {
           alert(response);
         }
@@ -87,9 +94,12 @@ export default function NewList() {
 
   return (
     <>
+      {showSuccessModal && (
+        <SuccessModal setShowSuccessModal={setShowSuccessModal} />
+      )}
       <DocumentHeader id={id} />
       <List
-        isNew={true}
+        isNew={isNew}
         patientId={id}
         handleItemChange={handleItemChange}
         andleDetailChange={handleDetailChange}

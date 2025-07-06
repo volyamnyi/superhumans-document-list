@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import DocumentHeader from "./DocumentHeader";
 import List from "./List";
+import SuccessModal from "./SuccessModal";
 
 import {
   getMedicineListById,
@@ -28,13 +29,14 @@ import {
   formatDate,
   handleSearchedMedicineClick,
   handleCurrentRowClick,
-  handleMedicineRegimeChange
+  handleMedicineRegimeChange,
 } from "../../utils/Functions";
 
 export default function ListDetails(props) {
   const { Id } = props;
   const id = Id ? Id : useParams().id;
   const isScaled = Id ? true : false;
+  const [isNew, setIsNew] = useState(false)
 
   const [ROLE, setROLE] = useState(localStorage.getItem("businessRole"));
   const [errorMessage, setErrorMessage] = useState("");
@@ -43,13 +45,11 @@ export default function ListDetails(props) {
     medicineListID: null,
     patientRef: null,
     documentName: "",
-    medicineListCreationUser: `${
-      localStorage.getItem("sub")
-    }`,
+    medicineListCreationUser: `${localStorage.getItem("sub")}`,
     medicineListCreationDate: null,
     medicineDetails: [],
   });
-  
+
   const [medicineDetails, setMedicineListItem] = useState([]);
   const [triggerSubmit, setTriggerSubmit] = useState(false);
   const [dates, setDates] = useState([]);
@@ -62,6 +62,8 @@ export default function ListDetails(props) {
     { id: "", name: "" },
   ]);
 
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
   useEffect(() => {
     getMedicineListById(id.split("|")[0]).then((list) => {
       setMedicineList(list);
@@ -73,9 +75,13 @@ export default function ListDetails(props) {
   useEffect(() => {
     if (triggerSubmit) {
       (async () => {
-        const response = await updateMedicineListById(medicineList, JSON.parse(localStorage.getItem("patient")));
+        const response = await updateMedicineListById(
+          medicineList,
+          JSON.parse(localStorage.getItem("patient"))
+        );
         if (response.status === 200) {
-          alert("Success");
+          //alert("Success");
+          setShowSuccessModal(true);
         } else {
           alert(response);
         }
@@ -165,10 +171,14 @@ export default function ListDetails(props) {
 
   return (
     <>
+      {showSuccessModal && (
+        <SuccessModal setShowSuccessModal={setShowSuccessModal} />
+      )}
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       {!isScaled && <DocumentHeader id={id.split("|")[1]} />}
       <List
-        isNew={false}
+        isNew={isNew}
+        setIsNew={setIsNew}
         handleItemChange={handleItemChange}
         andleDetailChange={handleDetailChange}
         handleAddNewMedicineItem={handleAddNewMedicineItem}
