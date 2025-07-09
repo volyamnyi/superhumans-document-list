@@ -172,7 +172,7 @@ export default function ListDetails(props) {
   return (
     <>
       {showSuccessModal && (
-        <SuccessModal setShowSuccessModal={setShowSuccessModal} />
+        <SuccessModal setShowSuccessModal={setShowSuccessModal} isSaved={true}/>
       )}
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       {!isScaled && <DocumentHeader id={id.split("|")[1]} />}

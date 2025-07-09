@@ -8,6 +8,7 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { formatDateToISO } from "../../utils/Functions";
+import SuccessModal from "./SuccessModal";
 
 export default function List({
   isNew,
@@ -95,6 +96,8 @@ export default function List({
 
   const [enableAddNewMedicine, setEnableAddNewMedicine] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(true);
+
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
 
   const getDatesInRange = (start, end) => {
     const dates = [];
@@ -242,6 +245,7 @@ export default function List({
       now.getTime() + 3 * 60 * 60 * 1000
     ).toISOString();
     generateDEDoc(medicineList.medicineListID, plusThreeHours);
+    setShowSuccessModal(true)
   }
 
   return (
@@ -555,25 +559,28 @@ export default function List({
                                           }}
                                         />
                                       </label>
-                                      {/*<textarea
-                                        style={{ fontWeight: "bold" }}
-                                        type="text"
-                                        name="medicineDose"
-                                        value={details[period].medicineDose}
-                                        disabled={isScaled}
-                                        onChange={(e) => {
-                                          !isScaled &&
-                                            handleDetailChange(
-                                              e,
-                                              medicineRow.id,
-                                              details.id,
-                                              period,
-                                              "medicineDose",
-                                              setMedicineListItem
-                                            );
-                                        }}
-                                        className="day-cell-dose-input"
-                                      ></textarea>*/}
+                                      {
+                                        <textarea
+                                          style={{ fontWeight: "bold" }}
+                                          type="text"
+                                          name="medicineDose"
+                                          value={details[period].medicineDose}
+                                          disabled={isScaled}
+                                          placeholder="доз."
+                                          onChange={(e) => {
+                                            !isScaled &&
+                                              handleDetailChange(
+                                                e,
+                                                medicineRow.id,
+                                                details.id,
+                                                period,
+                                                "medicineDose",
+                                                setMedicineListItem
+                                              );
+                                          }}
+                                          className="day-cell-dose-input"
+                                        ></textarea>
+                                      }
                                       {/*<input
                                           style={{ fontWeight: "bold" }}
                                           name="time"
@@ -724,12 +731,17 @@ export default function List({
                 className="save-button"
                 onClick={handleGenerateDEDoc}
               >
-                Згенерувати в ДЕ
+                Згенерувати листок в Доктор Елекс
               </button>
             )}
           </div>
         )}
       </form>
+      {showSuccessModal && (
+        <SuccessModal
+          setShowSuccessModal={setShowSuccessModal}
+        />
+      )}
     </>
   );
 }
