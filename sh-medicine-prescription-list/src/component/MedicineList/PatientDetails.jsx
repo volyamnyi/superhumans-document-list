@@ -18,7 +18,7 @@ export default function PatientDetails() {
   const ROLE = localStorage.getItem("businessRole");
 
   const [showApproveModal, setShowApproveModal] = useState(false);
-  
+
   const [documentsList, setDocumentsLList] = useState([
     {
       medicineListID: null,
@@ -115,22 +115,21 @@ export default function PatientDetails() {
   }
 
   async function handleDeleteDocument() {
-      await deleteDocumentById(selectDocument.split("|")[0]);
-      const data = await getAllDocumentsByPatientId(patient.id);
+    await deleteDocumentById(selectDocument.split("|")[0]);
+    const data = await getAllDocumentsByPatientId(patient.id);
 
-      setDocumentsLList(data);
+    setDocumentsLList(data);
 
-      handleSelectDocument(
-        documentsList[localStorage.getItem("selectedIndex") - 1]
-          .medicineListID +
-          "|" +
-          documentsList[localStorage.getItem("selectedIndex") - 1].patientRef,
-        localStorage.getItem("selectedIndex")
-      );
+    handleSelectDocument(
+      documentsList[localStorage.getItem("selectedIndex") - 1].medicineListID +
+        "|" +
+        documentsList[localStorage.getItem("selectedIndex") - 1].patientRef,
+      localStorage.getItem("selectedIndex")
+    );
 
-      const newSelectedDocumentArr = Array(data.length).fill(false);
-      newSelectedDocumentArr[localStorage.getItem("selectedIndex") - 1] = true;
-      setSelectedDocument(newSelectedDocumentArr);
+    const newSelectedDocumentArr = Array(data.length).fill(false);
+    newSelectedDocumentArr[localStorage.getItem("selectedIndex") - 1] = true;
+    setSelectedDocument(newSelectedDocumentArr);
   }
 
   return (
@@ -264,8 +263,13 @@ export default function PatientDetails() {
                     <div className="document-preview-container">
                       <div className="buttons">
                         <Link to={`/listdetails/${selectDocument}`}>
-                          <button className="edit-button">Редагуваги</button>
+                          <button className="edit-button">Редагувати</button>
                         </Link>
+                        {ROLE == "DOCTOR" && (
+                          <Link to={`/listdetails/copy/${selectDocument}`}>
+                            <button className="edit-button">Копіювати</button>
+                          </Link>
+                        )}
                         <div
                           className="trash-ico-container"
                           style={{ marginTop: "3px" }}

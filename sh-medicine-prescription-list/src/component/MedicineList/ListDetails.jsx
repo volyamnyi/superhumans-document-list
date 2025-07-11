@@ -7,6 +7,7 @@ import SuccessModal from "./SuccessModal";
 import {
   getMedicineListById,
   updateMedicineListById,
+  addNewMedicineList,
   updateMedicineListStatusByListId,
   isDocumentEditing,
   searchMedicine,
@@ -36,7 +37,8 @@ export default function ListDetails(props) {
   const { Id } = props;
   const id = Id ? Id : useParams().id;
   const isScaled = Id ? true : false;
-  const [isNew, setIsNew] = useState(false)
+  const [isNew, setIsNew] = useState(false);
+
 
   const [ROLE, setROLE] = useState(localStorage.getItem("businessRole"));
   const [errorMessage, setErrorMessage] = useState("");
@@ -75,11 +77,34 @@ export default function ListDetails(props) {
   useEffect(() => {
     if (triggerSubmit) {
       (async () => {
-        const response = await updateMedicineListById(
-          medicineList,
-          JSON.parse(localStorage.getItem("patient"))
-        );
-        if (response.status === 200) {
+        let response;
+        if (props.isCopy) {
+          medicineList.medicineListCreationUser = `${localStorage.getItem(
+            "sub"
+          )}`;
+          
+          medicineList.medicineListCreationDate = new Date();
+          medicineList.medicineDetails.map((md1) => {
+            md1.medicineDetails.map((md2) => {
+              md2.morning.isCompleted = false;
+              md2.day.isCompleted = false;
+              md2.evening.isCompleted = false;
+              md2.night.isCompleted = false;
+            });
+          });
+
+          response = await addNewMedicineList(
+            medicineList,
+            JSON.parse(localStorage.getItem("patient"))
+          );
+        } else {
+          response = await updateMedicineListById(
+            medicineList,
+            JSON.parse(localStorage.getItem("patient"))
+          );
+        }
+
+        if (response.status === 200 || response.status === 201) {
           //alert("Success");
           setShowSuccessModal(true);
         } else {
@@ -172,12 +197,16 @@ export default function ListDetails(props) {
   return (
     <>
       {showSuccessModal && (
-        <SuccessModal setShowSuccessModal={setShowSuccessModal} isSaved={true}/>
+        <SuccessModal
+          setShowSuccessModal={setShowSuccessModal}
+          isSaved={true}
+        />
       )}
       {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
       {!isScaled && <DocumentHeader id={id.split("|")[1]} />}
       <List
         isNew={isNew}
+        isCopy={props.isCopy}
         setIsNew={setIsNew}
         handleItemChange={handleItemChange}
         andleDetailChange={handleDetailChange}

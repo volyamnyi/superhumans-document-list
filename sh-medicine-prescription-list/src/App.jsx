@@ -77,6 +77,14 @@ function App() {
             }
           />
           <Route
+            path="/listdetails/copy/:id"
+            element={
+              <RequireAuth>
+                <ListDetails isCopy={true}/>
+              </RequireAuth>
+            }
+          />
+          <Route
             path="/patientdetails/:id"
             element={
               <RequireAuth>
