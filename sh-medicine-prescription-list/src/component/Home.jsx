@@ -194,6 +194,7 @@ export default function Home() {
 
     patients.forEach((p) => {
       p.medicineListEditDates?.forEach((mled) => {
+        try{
         if (
           isLessThanOneHour(
             isoToTimestampSeconds(formatDate2(mled).toISOString())
@@ -201,6 +202,9 @@ export default function Home() {
         ) {
           ids.push(p.id);
         }
+      }catch(error) {
+        console.log(error)
+      }
       });
     });
 

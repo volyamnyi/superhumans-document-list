@@ -9,9 +9,11 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { formatDateToISO } from "../../utils/Functions";
 import SuccessModal from "./SuccessModal";
+import { refreshDates } from "../../utils/Functions";
 
 export default function List({
   isNew,
+  isCopy,
   patientId,
   handleItemChange,
   handleDetailChange,
@@ -162,6 +164,16 @@ export default function List({
     }
   }, [startDate, endDate]);
 
+  const [counter, setCounter] = useState(0)
+
+  useEffect(() => {
+    setCounter(oldValue=>oldValue+1)
+    refreshDates(medicineList,setMedicineListItem, dateRange)
+  }, [dateRange[0]]);
+
+  function handleRefreshDates() {
+    refreshDates()
+  }
   /*useEffect(() => {
     if (startDate2 && endDate2 && new Date(startDate2) <= new Date(endDate2)) {
       const range = getDatesInRange(startDate2, endDate2);
@@ -176,7 +188,7 @@ export default function List({
   function getDatePicker() {
     return (
       <div>
-        <label>
+        <label className="medicine-date-picker">
           Від:&nbsp;&nbsp;
           <input
             type="date"
@@ -353,7 +365,7 @@ export default function List({
           </div>
           <div className="medicine-row-container">
             <div className="medicine-date-picker">
-              {isNew && showDatePicker && medicineDatePicker()}
+              {(isNew || isCopy) && showDatePicker && medicineDatePicker()}
             </div>
             <div className="medicine-method-column">Метод</div>
             {medicineDetails?.map((medicineRow, i) => (
@@ -482,8 +494,8 @@ export default function List({
                 {medicineRow.medicineDetails?.map((details, j) => {
                   return (
                     <div className="medicine-presc-details-row">
-                      {details.date >= startDate2 &&
-                        details.date <= endDate2 && (
+                      {/*details.date >= startDate2 &&
+                        details.date <= endDate2 &&*/ (
                           <div className="medicine-presc-details-row-first-div">
                             <div
                               className="medicine-date"
@@ -673,10 +685,11 @@ export default function List({
                 type="button"
                 onClick={() => {
                   setShowDatePicker(false);
+                  refreshDates(medicineList,setMedicineListItem, dateRange)
                   handleAddNewMedicineItem2(
                     medicineList,
                     setMedicineListItem,
-                    isNew
+                    (isNew || isCopy)
                       ? dateRange
                       : getDatesInRange(
                           medicineList.medicineDetails[0].medicineDetails[0]
