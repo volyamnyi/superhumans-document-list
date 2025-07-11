@@ -685,7 +685,7 @@ export default function List({
                 type="button"
                 onClick={() => {
                   setShowDatePicker(false);
-                  refreshDates(medicineList,setMedicineListItem, dateRange)
+                  //refreshDates(medicineList, setMedicineListItem, dateRange)
                   handleAddNewMedicineItem2(
                     medicineList,
                     setMedicineListItem,
