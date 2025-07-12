@@ -164,10 +164,10 @@ public class MedicineListController {
         throw new AppException("Пацієнта з " + id + " не знайдено", HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/patient/sort/{order}")
+    @GetMapping("/patient/sort")
     @ResponseStatus(HttpStatus.OK)
-    public List<Patient> getAllInpatients(@PathVariable("order") Boolean order) {
-        return medicineService.getAllInpatients(order);
+    public List<Patient> getAllInpatients(@RequestParam("order") Boolean order, @RequestParam("residence") String residence) {
+        return medicineService.getAllInpatients(order, residence);
     }
 
     /**

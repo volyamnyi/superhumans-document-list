@@ -615,6 +615,15 @@ body {
   margin-bottom: 10px;
 }
 
+.venue {
+  cursor: pointer;
+  margin-right: 5px;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
 @keyframes blinker {
   50% {
     opacity: 0;

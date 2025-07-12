@@ -15,6 +15,9 @@ import { isoToTimestampSeconds } from "../utils/Functions";
 import { isLessThanOneHour } from "../utils/Functions";
 import ListDetails from "./MedicineList/ListDetails";
 import { useMemo } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import ApproveModal from "./MedicineList/ApproveModal";
 
 export default function Home() {
   const [presentation, setPresentation] = useState(1);
@@ -22,6 +25,8 @@ export default function Home() {
   const { id } = useParams();
   const [patientStateId, setPatientStateId] = useState(id);
   const ROLE = localStorage.getItem("businessRole");
+
+  const [showApproveModal, setShowApproveModal] = useState(false);
 
   const [documentsList, setDocumentsLList] = useState([
     {
@@ -57,7 +62,6 @@ export default function Home() {
   const [patients, setPatients] = useState([]);
   const [localSearchedPatients, setLocalSearchedPatients] = useState([]);
   const [patientsDocuments, setPatientsDocuments] = useState([]);
-  //console.log(patients)
 
   /*useEffect(() => {
     patients.map(patient=>getAllDocumentsByPatientId(patient.id).then((documents) => {
@@ -66,11 +70,21 @@ export default function Home() {
     ;
   }, [patients]);
   console.log(patientsDocuments);*/
+  const [residence, setResidence] = useState(
+    localStorage.getItem("residence") ? localStorage.getItem("residence") : "19"
+  );
+
+  function handleResidenceClick(residence) {
+    localStorage.setItem("residence", residence);
+    setResidence(residence);
+  }
+
   useEffect(() => {
-    getAllInpatients(true).then((patients) => {
-      return setPatients(patients);
-    });
-  }, []);
+    if (residence === "19" || residence === "37")
+      getAllInpatients(true, residence).then((patients) => {
+        return setPatients(patients);
+      });
+  }, [residence]);
 
   const [selectDocument, setSelectDocument] = useState("1|1");
   const [selectedDocument, setSelectedDocument] = useState([]);
@@ -139,11 +153,12 @@ export default function Home() {
   };
 
   const seachLocalPatients = (value) => {
-    
-   const filteredPatients = patients.filter((patient) => patient.name.toLowerCase().includes(value.toLowerCase()));
-  setLocalSearchedPatients(filteredPatients);
+    const filteredPatients = patients.filter((patient) =>
+      patient.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setLocalSearchedPatients(filteredPatients);
   };
-  
+
   async function handleSearchedPatientClick(event) {
     setShowSuggestions(false);
     const patientId = event.currentTarget.dataset.patientid;
@@ -181,30 +196,28 @@ export default function Home() {
   const [order, setOrder] = useState(false);
 
   function handlePatientsSort() {
-    getAllInpatients(order).then((patients) => {
+    getAllInpatients(order, residence).then((patients) => {
       return setPatients(patients);
     });
     setOrder((prevValue) => !prevValue);
   }
-
-  //const [highLightIds, setHighLightIds] = useState([]);
 
   const highLightIds = useMemo(() => {
     const ids = [];
 
     patients.forEach((p) => {
       p.medicineListEditDates?.forEach((mled) => {
-        try{
-        if (
-          isLessThanOneHour(
-            isoToTimestampSeconds(formatDate2(mled).toISOString())
-          )
-        ) {
-          ids.push(p.id);
+        try {
+          if (
+            isLessThanOneHour(
+              isoToTimestampSeconds(formatDate2(mled).toISOString())
+            )
+          ) {
+            ids.push(p.id);
+          }
+        } catch (error) {
+          console.log(error);
         }
-      }catch(error) {
-        console.log(error)
-      }
       });
     });
 
@@ -213,38 +226,41 @@ export default function Home() {
 
   const presentationA = (
     <>
-    {/* Доробити !!!!! <label href="#"> Відділення реконструктивної хірургії<input
-        className="radio-input"
-        type="radio"
-        style={{ marginLeft: "10px", visibility:"hidden" }}
-        name="presentation"
-        value="presentation1"
-        onChange={handleSetPresentation}
-      /></label>
-      <label > Загальне <input
-        className="radio-input"
-        type="radio"
-        style={{ marginLeft: "10px", visibility:"hidden" }}
-        name="presentation"
-        value="presentation2"
-        onChange={handleSetPresentation}
-      /></label>*/}
-      <input
-        className="radio-input"
-        type="radio"
-        style={{ marginLeft: "10px" }}
-        name="presentation"
-        value="presentation1"
-        onChange={handleSetPresentation}
-      />
-      <input
-        className="radio-input"
-        type="radio"
-        style={{ marginLeft: "10px" }}
-        name="presentation"
-        value="presentation2"
-        onChange={handleSetPresentation}
-      />
+      <label>
+        <input
+          className="radio-input"
+          type="radio"
+          style={{ marginLeft: "10px", visibility: "hidden" }}
+          name="presentation"
+          value="presentation1"
+          onChange={handleSetPresentation}
+        />
+        <span
+          className={`venue ${residence === "19" && "underline"}`}
+          onClick={() => handleResidenceClick("19")}
+        >
+          Реконструктивна хірургія{" "}
+        </span>
+        <span
+          className={`venue ${residence === "37" && "underline"}`}
+          onClick={() => handleResidenceClick("37")}
+        >
+          Реабілітація
+        </span>
+      </label>
+      {/*<label>
+        <input
+          className="radio-input"
+          type="radio"
+          style={{ marginLeft: "10px", visibility: "hidden" }}
+          name="presentation"
+          value="presentation2"
+          onChange={handleSetPresentation}
+        />
+        <span className="venue" onClick={() => handleResidenceClick("Усі")}>
+          Усі
+        </span>
+      </label>*/}
       <div>
         <div>
           <meta charSet="UTF-8" />
@@ -370,65 +386,65 @@ tr:nth-child(odd) {
                 </tr>
               </thead>
               <tbody>
-                {//patients.map((patient, i) => (
-
-               !isEmpty(patientName)? localSearchedPatients.map((patient, i) => (
-                  <tr
-                    key={i}
-                    style={
-                      highLightIds.includes(patient.id)
-                        ? { backgroundColor: "orange" }
-                        : {}
-                    }
-                    className={
-                      highLightIds.includes(patient.id) ? "blink_me" : ""
-                    }
-                  >
-                    <td>{patient.id}</td>
-                    <td>
-                      {
-                        <Link
-                          data-patientid={patient.id}
-                          to={`/patientdetails/${patient.id}`}
-                          key={i}
-                        >
-                          {patient.name}
-                        </Link>
-                      }
-                    </td>
-                    <td>{patient.roomNumber}</td>
-                    <td>{patient.bedNumber}</td>
-                    <td>{patient.doctor}</td>
-                  </tr>
-                )):patients.map((patient, i) => (
-                  <tr
-                    key={i}
-                    style={
-                      highLightIds.includes(patient.id)
-                        ? { backgroundColor: "orange" }
-                        : {}
-                    }
-                    className={
-                      highLightIds.includes(patient.id) ? "blink_me" : ""
-                    }
-                  >
-                    <td>{patient.id}</td>
-                    <td>
-                      {
-                        <Link
-                          data-patientid={patient.id}
-                          to={`/patientdetails/${patient.id}`}
-                          key={i}
-                        >
-                          {patient.name}
-                        </Link>
-                      }
-                    </td>
-                    <td>{patient.roomNumber}</td>
-                    <td>{patient.bedNumber}</td>
-                    <td>{patient.doctor}</td>
-                  </tr>
-                ))}
+                {!isEmpty(patientName)
+                  ? localSearchedPatients.map((patient, i) => (
+                      <tr
+                        key={i}
+                        style={
+                          highLightIds.includes(patient.id)
+                            ? { backgroundColor: "orange" }
+                            : {}
+                        }
+                        className={
+                          highLightIds.includes(patient.id) ? "blink_me" : ""
+                        }
+                      >
+                        <td>{patient.id}</td>
+                        <td>
+                          {
+                            <Link
+                              data-patientid={patient.id}
+                              to={`/patientdetails/${patient.id}`}
+                              key={i}
+                            >
+                              {patient.name}
+                            </Link>
+                          }
+                        </td>
+                        <td>{patient.roomNumber}</td>
+                        <td>{patient.bedNumber}</td>
+                        <td>{patient.doctor}</td>
+                      </tr>
+                    ))
+                  : patients.map((patient, i) => (
+                      <tr
+                        key={i}
+                        style={
+                          highLightIds.includes(patient.id)
+                            ? { backgroundColor: "orange" }
+                            : {}
+                        }
+                        className={
+                          highLightIds.includes(patient.id) ? "blink_me" : ""
+                        }
+                      >
+                        <td>{patient.id}</td>
+                        <td>
+                          {
+                            <Link
+                              data-patientid={patient.id}
+                              to={`/patientdetails/${patient.id}`}
+                              key={i}
+                            >
+                              {patient.name}
+                            </Link>
+                          }
+                        </td>
+                        <td>{patient.roomNumber}</td>
+                        <td>{patient.bedNumber}</td>
+                        <td>{patient.doctor}</td>
+                      </tr>
+                    ))}
               </tbody>
             </table>
           </div>
@@ -438,22 +454,46 @@ tr:nth-child(odd) {
   );
   const presentationB = (
     <>
-      <input
-        className="radio-input"
-        type="radio"
-        style={{ marginLeft: "10px" }}
-        name="presentation"
-        value="presentation1"
-        onChange={handleSetPresentation}
-      />
-      <input
-        className="radio-input"
-        type="radio"
-        style={{ marginLeft: "10px" }}
-        name="presentation"
-        value="presentation2"
-        onChange={handleSetPresentation}
-      />
+      {showApproveModal && (
+        <ApproveModal
+          setShowApproveModal={setShowApproveModal}
+          handleDeleteDocument={handleDeleteDocument}
+        />
+      )}
+      <label>
+        <input
+          className="radio-input"
+          type="radio"
+          style={{ marginLeft: "10px", visibility: "hidden" }}
+          name="presentation"
+          value="presentation1"
+          onChange={handleSetPresentation}
+        />
+
+        <span
+          className={`venue ${residence === "19" && "underline"}`}
+          onClick={() => handleResidenceClick("19")}
+        >
+          Реконструктивна хірургія{" "}
+        </span>
+        <span
+          className={`venue ${residence === "37" && "underline"}`}
+          onClick={() => handleResidenceClick("37")}
+        >
+          Реабілітація
+        </span>
+      </label>
+      {/* <label>
+        <input
+          className="radio-input"
+          type="radio"
+          style={{ marginLeft: "10px", visibility: "hidden" }}
+          name="presentation"
+          value="presentation2"
+          onChange={handleSetPresentation}
+        />
+        <span className="venue">Усі</span>
+      </label>*/}
       <div>
         <div>
           <meta charSet="UTF-8" />
@@ -576,14 +616,23 @@ tr:nth-child(odd) {
                           Редагуваги
                         </button>
                       </Link>
+                      {ROLE == "DOCTOR" && (
+                        <Link to={`/listdetails/copy/${selectDocument}`}>
+                          <button className="edit-button">Копіювати</button>
+                        </Link>
+                      )}
 
-                      <button
-                        className="btn red"
-                        type="button"
-                        onClick={() => handleDeleteDocument(selectDocument)}
+                      <div
+                        className="trash-ico-container"
+                        style={{ marginTop: "3px" }}
                       >
-                        X
-                      </button>
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          onClick={() => {
+                            setShowApproveModal(true);
+                          }}
+                        />
+                      </div>
                     </div>
                     <div style={{ scale: 0.7 }} className="scroll-both">
                       {<ListDetails key={selectDocument} Id={selectDocument} />}

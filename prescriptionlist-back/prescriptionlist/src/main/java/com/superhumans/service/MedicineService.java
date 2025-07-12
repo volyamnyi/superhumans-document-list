@@ -6,7 +6,6 @@ import com.superhumans.model.medicinelist.MedicineList;
 import com.superhumans.model.patient.Patient;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -33,7 +32,7 @@ public interface MedicineService {
 
     Boolean isDocumentEditing(Integer id);
 
-    List<Patient> getAllInpatients(Boolean order);
+    List<Patient> getAllInpatients(Boolean order, String residence);
 
     void generateDeDocument(Integer patientId, String documentDateTime);
 }

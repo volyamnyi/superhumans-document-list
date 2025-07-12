@@ -377,13 +377,13 @@ export function handleAddNewMedicineItem(
 }
 
 export function refreshDates(medicineList, setMedicineListItem, dates) {
-  
-  console.log(dates)
   const medicineDetails = medicineList.medicineDetails;
-  medicineDetails.forEach((md1)=>md1.medicineDetails.forEach((md2,i)=>md2.date=dates[i]))
+  medicineDetails.forEach((md1) =>
+    md1.medicineDetails.forEach((md2, i) => (md2.date = dates[i]))
+  );
   medicineList.medicineDetails = medicineDetails;
-  //console.log(medicineList.medicineDetails)
-  setMedicineListItem(medicineDetails)
+
+  setMedicineListItem(medicineDetails);
 }
 
 export function handleAddNewMedicineItem2(

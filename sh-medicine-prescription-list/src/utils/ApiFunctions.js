@@ -247,9 +247,9 @@ export async function searchPatients(keyword) {
   }
 }
 
-export async function getAllInpatients(order) {
+export async function getAllInpatients(order, residence) {
   try {
-    const response = await api.get(`/api/medicinelist/patient/sort/${order}`, {
+    const response = await api.get(`/api/medicinelist/patient/sort?order=${order}&residence=${residence}`, {
       headers: getHeader(),
     });
     return response.data;

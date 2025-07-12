@@ -17,7 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -113,8 +112,8 @@ public class MedicineListServiceImpl implements MedicineService {
     }
 
     @Override
-    public List<Patient> getAllInpatients(Boolean order) {
-        return medicineListRepository.getAllInpatients(order);
+    public List<Patient> getAllInpatients(Boolean order, String residence) {
+        return medicineListRepository.getAllInpatients(order, residence);
     }
 
     @Override

@@ -307,7 +307,7 @@ public class MedicineListRepository {
         return jdbcTemplate.query(sql, mapper, query);
     }
 
-    public List<Patient> getAllInpatients(Boolean order) {
+    public List<Patient> getAllInpatients(Boolean order, String residence) {
 
         RowMapper<Patient> mapper = new RowMapper() {
 
@@ -366,7 +366,7 @@ public class MedicineListRepository {
                         "left join venue v1 on v.VenueParentRef = v1.VenueID " +
                         "left join venue v2 on v1.VenueParentRef = v2.VenueID " +
                         "left join Users u on u.UserLogin = r.UserRef " +
-                        "where ResidenceSequence1Ref in (19) ORDER BY PatientName " + ascDesc + ";", mapper);
+                        "where ResidenceSequence1Ref in (?) ORDER BY PatientName " + ascDesc + ";", mapper, residence);
 
 
         String editDatesSql = "SELECT mli.MedicineListItemEditDate, ml.PatientRef " +
