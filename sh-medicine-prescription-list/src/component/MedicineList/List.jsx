@@ -164,15 +164,15 @@ export default function List({
     }
   }, [startDate, endDate]);
 
-  const [counter, setCounter] = useState(0)
+  const [counter, setCounter] = useState(0);
 
   useEffect(() => {
-    setCounter(oldValue=>oldValue+1)
-    refreshDates(medicineList,setMedicineListItem, dateRange)
+    setCounter((oldValue) => oldValue + 1);
+    refreshDates(medicineList, setMedicineListItem, dateRange);
   }, [dateRange[0]]);
 
   function handleRefreshDates() {
-    refreshDates()
+    refreshDates();
   }
   /*useEffect(() => {
     if (startDate2 && endDate2 && new Date(startDate2) <= new Date(endDate2)) {
@@ -257,9 +257,9 @@ export default function List({
       now.getTime() + 3 * 60 * 60 * 1000
     ).toISOString();
     generateDEDoc(medicineList.medicineListID, plusThreeHours);
-    setShowSuccessModal(true)
+    setShowSuccessModal(true);
   }
-
+  
   return (
     <>
       {/* first*/}
@@ -295,10 +295,37 @@ export default function List({
             <div className="day-cell">
               <label
                 className="day-cell-input-label"
+                style={{ backgroundColor: "purple" }}
+              ></label>{" "}
+              &nbsp;-{" "}
+              <span>
+                {" "}
+                &nbsp;<strong>Заплановано і завершено</strong>
+                <br/><strong>(Середня кнопка мишки <br/>по голубому)</strong>
+              </span>
+            </div>
+            &nbsp;
+            <div className="day-cell">
+              <label
+                className="day-cell-input-label"
                 style={{ backgroundColor: "lightgreen" }}
               ></label>{" "}
               &nbsp;- <span> &nbsp;Виконано&nbsp;</span>
             </div>
+            &nbsp;-{" "}
+            <div className="day-cell">
+              <label
+                className="day-cell-input-label"
+                style={{ backgroundColor: "darkgreen" }}
+              ></label>{" "}
+              &nbsp;-{" "}
+              <span>
+                {" "}
+                &nbsp;<strong>Виконано і завершено</strong>
+                <br/><strong>(Середня кнопка мишки <br/>по фіолетовому)</strong>
+              </span>
+            </div>
+            &nbsp;
             <div className="day-cell">
               <label
                 className="day-cell-input-label"
@@ -494,106 +521,158 @@ export default function List({
                 {medicineRow.medicineDetails?.map((details, j) => {
                   return (
                     <div className="medicine-presc-details-row">
-                      {/*details.date >= startDate2 &&
-                        details.date <= endDate2 &&*/ (
-                          <div className="medicine-presc-details-row-first-div">
-                            <div
-                              className="medicine-date"
-                              key={j}
-                              style={{ fontWeight: "bold" }}
-                            >
-                              {/*details.date.split("-").reverse().join("-")*/}
-                              {`${details.date.split("-")[2]} ${
-                                months[details.date.split("-")[1]]
-                              } ${details.date.split("-")[0]}`}
-                              <div className="day-period">
-                                <div>Р</div>
-                                <div>Д</div>
-                                <div>В</div>
-                                <div>Н</div>
-                              </div>
+                      {
+                        /*details.date >= startDate2 &&
+                        details.date <= endDate2 &&*/ <div className="medicine-presc-details-row-first-div">
+                          <div
+                            className="medicine-date"
+                            key={j}
+                            style={{ fontWeight: "bold" }}
+                          >
+                            {/*details.date.split("-").reverse().join("-")*/}
+                            {`${details.date.split("-")[2]} ${
+                              months[details.date.split("-")[1]]
+                            } ${details.date.split("-")[0]}`}
+                            <div className="day-period">
+                              <div>Р</div>
+                              <div>Д</div>
+                              <div>В</div>
+                              <div>Н</div>
                             </div>
-                            <div
-                              key={details.id}
-                              className="medicine-presc-details-column"
-                            >
-                              <div className="day-cells-container">
-                                {["morning", "day", "evening", "night"].map(
-                                  (period) => (
-                                    <div key={period} className="day-cell">
-                                      <label
-                                        className="day-cell-input-label"
-                                        style={
-                                          details[period].isPlanned &&
-                                          !details[period].isCompleted
-                                            ? { backgroundColor: "lightblue" }
-                                            : details[period].isCompleted
-                                            ? { backgroundColor: "lightgreen" }
-                                            : {}
+                          </div>
+                          <div
+                            key={details.id}
+                            className="medicine-presc-details-column"
+                          >
+                            <div className="day-cells-container">
+                              {["morning", "day", "evening", "night"].map(
+                                (period) => (
+                                  <div key={period} className="day-cell">
+                                    <label
+                                      className="day-cell-input-label"
+                                      style={(() => {
+                                        const status = details[period];
+
+                                        if (
+                                          status.isPlanned &&
+                                          !status.isCompleted &&
+                                          !status.isPlannedAndFinished
+                                        ) {
+                                          return {
+                                            backgroundColor: "lightblue",
+                                          };
                                         }
-                                      >
-                                        <input
-                                          className="day-cell-input"
-                                          type="checkbox"
-                                          checked={
-                                            ROLE === "NURSE"
-                                              ? details[period].isCompleted
-                                              : details[period].isPlanned
-                                          }
-                                          onChange={(e) => {
-                                            if (
-                                              ROLE === "NURSE" &&
-                                              details[period].isPlanned
-                                            ) {
-                                              !isScaled &&
-                                                handleDetailChange(
-                                                  e,
-                                                  medicineRow.id,
-                                                  details.id,
-                                                  period,
-                                                  "isCompleted",
-                                                  setMedicineListItem
-                                                );
-                                            } else if (
-                                              ROLE === "DOCTOR" &&
-                                              !details[period].isCompleted
-                                            ) {
-                                              !isScaled &&
-                                                handleDetailChange(
-                                                  e,
-                                                  medicineRow.id,
-                                                  details.id,
-                                                  period,
-                                                  "isPlanned",
-                                                  setMedicineListItem
-                                                );
-                                            }
-                                          }}
-                                        />
-                                      </label>
-                                      {
-                                        <textarea
-                                          style={{ fontWeight: "bold" }}
-                                          type="text"
-                                          name="medicineDose"
-                                          value={details[period].medicineDose}
-                                          disabled={isScaled}
-                                          placeholder="доз."
-                                          onChange={(e) => {
+                                        
+                                        else if (status.isCompleted && !status.isCompletedAndFinished) {
+                                          return {
+                                            backgroundColor: "lightgreen",
+                                          };
+                                        }
+                                        
+                                        if (status.isPlannedAndFinished && !status.isCompletedAndFinished) {
+                                          return { backgroundColor: "purple" };
+                                        }
+                                        
+                                        else if (status.isCompletedAndFinished) {
+                                          return {
+                                            backgroundColor: "darkgreen",
+                                          };
+                                        } else {
+                                          return {};
+                                        }
+                                      })()}
+                                      onAuxClick={(e) => {
+                                        if (
+                                          ROLE === "NURSE" &&
+                                          details[period].isPlannedAndFinished
+                                        ) {
+                                          !isScaled &&
+                                            handleDetailChange(
+                                              e,
+                                              medicineRow.id,
+                                              details.id,
+                                              period,
+                                              "isCompletedAndFinished",
+                                              setMedicineListItem
+                                            );
+                                        } else if (
+                                          ROLE === "DOCTOR" &&
+                                          details[period].isPlanned
+                                        ) {
+                                          !isScaled &&
+                                            handleDetailChange(
+                                              e,
+                                              medicineRow.id,
+                                              details.id,
+                                              period,
+                                              "isPlannedAndFinished",
+                                              setMedicineListItem
+                                            );
+                                        }
+                                      }}
+                                    >
+                                      <input
+                                        className="day-cell-input"
+                                        type="checkbox"
+                                        checked={
+                                          ROLE === "NURSE"
+                                            ? details[period].isCompleted
+                                            : details[period].isPlanned
+                                        }
+                                        onChange={(e) => {
+                                          if (
+                                            ROLE === "NURSE" &&
+                                            details[period].isPlanned
+                                          ) {
                                             !isScaled &&
                                               handleDetailChange(
                                                 e,
                                                 medicineRow.id,
                                                 details.id,
                                                 period,
-                                                "medicineDose",
+                                                "isCompleted",
                                                 setMedicineListItem
                                               );
-                                          }}
-                                          className="day-cell-dose-input"
-                                        ></textarea>
-                                      }
-                                      {/*<input
+                                          } else if (
+                                            ROLE === "DOCTOR" &&
+                                            !details[period].isCompleted
+                                          ) {
+                                            !isScaled &&
+                                              handleDetailChange(
+                                                e,
+                                                medicineRow.id,
+                                                details.id,
+                                                period,
+                                                "isPlanned",
+                                                setMedicineListItem
+                                              );
+                                          }
+                                        }}
+                                      />
+                                    </label>
+                                    {
+                                      <textarea
+                                        style={{ fontWeight: "bold" }}
+                                        type="text"
+                                        name="medicineDose"
+                                        value={details[period].medicineDose}
+                                        disabled={isScaled}
+                                        placeholder="доз."
+                                        onChange={(e) => {
+                                          !isScaled &&
+                                            handleDetailChange(
+                                              e,
+                                              medicineRow.id,
+                                              details.id,
+                                              period,
+                                              "medicineDose",
+                                              setMedicineListItem
+                                            );
+                                        }}
+                                        className="day-cell-dose-input"
+                                      ></textarea>
+                                    }
+                                    {/*<input
                                           style={{ fontWeight: "bold" }}
                                           name="time"
                                           type="time"
@@ -625,54 +704,13 @@ export default function List({
                                               );
                                           }}
                                         />*/}
-                                    </div>
-                                  )
-                                )}
-                              </div>
+                                  </div>
+                                )
+                              )}
                             </div>
                           </div>
-                        )}
-                      {/*medicineRow.medicineDetails.length - 1 == j &&
-                        ROLE === "DOCTOR" &&
-                        !isScaled &&
-                        isNew && (
-                          <button
-                            className="plus"
-                            type="button"
-                            onClick={() =>
-                              handleAddNewDayDetails2(
-                                medicineDetails,
-                                i,
-                                j,
-                                setMedicineListItem,
-                                dateRange
-                              )
-                            }
-                          >
-                            +
-                          </button>
-                        )}
-
-                      {medicineRow.medicineDetails.length - 1 == j &&
-                        medicineRow.medicineDetails.length > 1 &&
-                        ROLE === "DOCTOR" &&
-                        !isScaled && (
-                          <button
-                            style={{ marginLeft: "15px" }}
-                            className="plus danger minus"
-                            type="button"
-                            onClick={() =>
-                              handleDelNewDayDetails2(
-                                medicineDetails,
-                                i,
-                                j,
-                                setMedicineListItem
-                              )
-                            }
-                          >
-                            -
-                          </button>
-                        )*/}
+                        </div>
+                      }
                     </div>
                   );
                 })}
@@ -689,7 +727,7 @@ export default function List({
                   handleAddNewMedicineItem2(
                     medicineList,
                     setMedicineListItem,
-                    (isNew || isCopy)
+                    isNew || isCopy
                       ? dateRange
                       : getDatesInRange(
                           medicineList.medicineDetails[0].medicineDetails[0]
@@ -751,9 +789,7 @@ export default function List({
         )}
       </form>
       {showSuccessModal && (
-        <SuccessModal
-          setShowSuccessModal={setShowSuccessModal}
-        />
+        <SuccessModal setShowSuccessModal={setShowSuccessModal} />
       )}
     </>
   );

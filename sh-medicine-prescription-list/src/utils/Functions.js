@@ -43,7 +43,9 @@ export function handleAddNewDayDetails(
       time: "",
       medicineDose: "",
       isPlanned: false,
+      isPlannedAndFinished: false,
       isCompleted: false,
+      isCompletedAndFinished: false,
       isOverdue: false,
       isFailed: false,
     },
@@ -52,7 +54,9 @@ export function handleAddNewDayDetails(
       time: "",
       medicineDose: "",
       isPlanned: false,
+      isPlannedAndFinished: false,
       isCompleted: false,
+      isCompletedAndFinished: false,
       isOverdue: false,
       isFailed: false,
     },
@@ -61,7 +65,9 @@ export function handleAddNewDayDetails(
       time: "",
       medicineDose: "",
       isPlanned: false,
+      isPlannedAndFinished: false,
       isCompleted: false,
+      isCompletedAndFinished: false,
       isOverdue: false,
       isFailed: false,
     },
@@ -70,7 +76,9 @@ export function handleAddNewDayDetails(
       time: "",
       medicineDose: "",
       isPlanned: false,
+      isPlannedAndFinished: false,
       isCompleted: false,
+      isCompletedAndFinished: false,
       isOverdue: false,
       isFailed: false,
     },
@@ -80,76 +88,6 @@ export function handleAddNewDayDetails(
 }
 
 export function fillAll(row, setMedicineListItem, dates) {}
-
-export function handleAddNewDayDetails2(
-  medicineDetails,
-  rowIndex,
-  colIndex,
-  setMedicineListItem,
-  dates
-) {
-  //const daysCount = prompt("Введіть скільки днів додати:");
-  setTimeout(() => {
-    for (let k = 1; k < dates.length; k++)
-      medicineDetails[rowIndex]?.medicineDetails?.push({
-        id: nanoid(),
-        date: dates[k],
-        morning: {
-          id: nanoid(),
-          time: "",
-          medicineDose:
-            medicineDetails[rowIndex]?.medicineDetails[0].morning.medicineDose,
-          isPlanned: medicineDetails[rowIndex]?.medicineDetails[0].morning
-            .isPlanned
-            ? true
-            : false,
-          isCompleted: false,
-          isOverdue: false,
-          isFailed: false,
-        },
-        day: {
-          id: nanoid(),
-          time: "",
-          medicineDose:
-            medicineDetails[rowIndex]?.medicineDetails[0].day.medicineDose,
-          isPlanned: medicineDetails[rowIndex]?.medicineDetails[0].day.isPlanned
-            ? true
-            : false,
-          isCompleted: false,
-          isOverdue: false,
-          isFailed: false,
-        },
-        evening: {
-          id: nanoid(),
-          time: "",
-          medicineDose:
-            medicineDetails[rowIndex]?.medicineDetails[0].evening.medicineDose,
-          isPlanned: medicineDetails[rowIndex]?.medicineDetails[0].evening
-            .isPlanned
-            ? true
-            : false,
-          isCompleted: false,
-          isOverdue: false,
-          isFailed: false,
-        },
-        night: {
-          id: nanoid(),
-          time: "",
-          medicineDose:
-            medicineDetails[rowIndex]?.medicineDetails[0].night.medicineDose,
-          isPlanned: medicineDetails[rowIndex]?.medicineDetails[0].night
-            .isPlanned
-            ? true
-            : false,
-          isCompleted: false,
-          isOverdue: false,
-          isFailed: false,
-        },
-      });
-
-    setMedicineListItem([...medicineDetails]);
-  }, 500);
-}
 
 export function handleAddNewDayDetails4(
   medicineDetails,
@@ -175,7 +113,9 @@ export function handleAddNewDayDetails4(
           time: "",
           medicineDose: reference.morning.medicineDose,
           isPlanned: !!reference.morning.isPlanned,
+          isPlannedAndFinished: false,
           isCompleted: false,
+          isCompletedAndFinished: false,
           isOverdue: false,
           isFailed: false,
         };
@@ -186,7 +126,9 @@ export function handleAddNewDayDetails4(
           time: "",
           medicineDose: reference.day.medicineDose,
           isPlanned: !!reference.day.isPlanned,
+          isPlannedAndFinished: false,
           isCompleted: false,
+          isCompletedAndFinished: false,
           isOverdue: false,
           isFailed: false,
         };
@@ -197,7 +139,9 @@ export function handleAddNewDayDetails4(
           time: "",
           medicineDose: reference.evening.medicineDose,
           isPlanned: !!reference.evening.isPlanned,
+          isPlannedAndFinished: false,
           isCompleted: false,
+          isCompletedAndFinished: false,
           isOverdue: false,
           isFailed: false,
         };
@@ -208,7 +152,9 @@ export function handleAddNewDayDetails4(
           time: "",
           medicineDose: reference.night.medicineDose,
           isPlanned: !!reference.night.isPlanned,
+          isPlannedAndFinished: false,
           isCompleted: false,
+          isCompletedAndFinished: false,
           isOverdue: false,
           isFailed: false,
         };
@@ -218,58 +164,6 @@ export function handleAddNewDayDetails4(
     setMedicineListItem([...medicineDetails]);
   }, 500);
 }
-
-export function handleAddNewDayDetails3(
-  medicineDetails,
-  rowIndex,
-  colIndex,
-  setMedicineListItem,
-  dates
-) {
-  medicineDetails[rowIndex]?.medicineDetails?.push({
-    id: nanoid(),
-    date: dates[colIndex],
-    morning: {
-      id: nanoid(),
-      time: "",
-      medicineDose: "",
-      isPlanned: false,
-      isCompleted: false,
-      isOverdue: false,
-      isFailed: false,
-    },
-    day: {
-      id: nanoid(),
-      time: "",
-      medicineDose: "",
-      isPlanned: false,
-      isCompleted: false,
-      isOverdue: false,
-      isFailed: false,
-    },
-    evening: {
-      id: nanoid(),
-      time: "",
-      medicineDose: "",
-      isPlanned: false,
-      isCompleted: false,
-      isOverdue: false,
-      isFailed: false,
-    },
-    night: {
-      id: nanoid(),
-      time: "",
-      medicineDose: "",
-      isPlanned: false,
-      isCompleted: false,
-      isOverdue: false,
-      isFailed: false,
-    },
-  });
-
-  setMedicineListItem([...medicineDetails]);
-}
-
 /**
  * Видаляє останній запис дня з деталей прийому ліків
  * @param {*} medicineDetails Масив об’єктів ліків
@@ -285,25 +179,6 @@ export function handleDelNewDayDetails(
   setMedicineListItem
 ) {
   medicineDetails[rowIndex]?.medicineDetails?.pop();
-  setMedicineListItem([...medicineDetails]);
-}
-
-export function handleDelNewDayDetails2(
-  medicineDetails,
-  rowIndex,
-  colIndex,
-  setMedicineListItem
-) {
-  /*if (medicineDetails[rowIndex]) {
-    medicineDetails[rowIndex].medicineDetails = [
-      medicineDetails[rowIndex].medicineDetails[0],
-    ];
-  }*/
-  let daysCount = prompt("Введіть скільки днів видалити:");
-  daysCount = daysCount - 1 >= colIndex ? (daysCount = colIndex) : daysCount;
-
-  for (let i = 0; i < daysCount; i++)
-    medicineDetails[rowIndex]?.medicineDetails?.pop();
   setMedicineListItem([...medicineDetails]);
 }
 
@@ -339,7 +214,9 @@ export function handleAddNewMedicineItem(
             time: "",
             medicineDose: "",
             isPlanned: false,
+            isPlannedAndFinished: false,
             isCompleted: false,
+            isCompletedAndFinished: false,
             isOverdue: false,
             isFailed: false,
           },
@@ -348,7 +225,9 @@ export function handleAddNewMedicineItem(
             time: "",
             medicineDose: "",
             isPlanned: false,
+            isPlannedAndFinished: false,
             isCompleted: false,
+            isCompletedAndFinished: false,
             isOverdue: false,
             isFailed: false,
           },
@@ -357,7 +236,9 @@ export function handleAddNewMedicineItem(
             time: "",
             medicineDose: "",
             isPlanned: false,
+            isPlannedAndFinished: false,
             isCompleted: false,
+            isCompletedAndFinished: false,
             isOverdue: false,
             isFailed: false,
           },
@@ -366,7 +247,9 @@ export function handleAddNewMedicineItem(
             time: "",
             medicineDose: "",
             isPlanned: false,
+            isPlannedAndFinished: false,
             isCompleted: false,
+            isCompletedAndFinished: false,
             isOverdue: false,
             isFailed: false,
           },
@@ -405,7 +288,9 @@ export function handleAddNewMedicineItem2(
         time: "",
         medicineDose: "",
         isPlanned: false,
+        isPlannedAndFinished: false,
         isCompleted: false,
+        isCompletedAndFinished: false,
         isOverdue: false,
         isFailed: false,
       },
@@ -414,7 +299,9 @@ export function handleAddNewMedicineItem2(
         time: "",
         medicineDose: "",
         isPlanned: false,
+        isPlannedAndFinished: false,
         isCompleted: false,
+        isCompletedAndFinished: false,
         isOverdue: false,
         isFailed: false,
       },
@@ -423,7 +310,9 @@ export function handleAddNewMedicineItem2(
         time: "",
         medicineDose: "",
         isPlanned: false,
+        isPlannedAndFinished: false,
         isCompleted: false,
+        isCompletedAndFinished: false,
         isOverdue: false,
         isFailed: false,
       },
@@ -432,7 +321,9 @@ export function handleAddNewMedicineItem2(
         time: "",
         medicineDose: "",
         isPlanned: false,
+        isPlannedAndFinished: false,
         isCompleted: false,
+        isCompletedAndFinished: false,
         isOverdue: false,
         isFailed: false,
       },
@@ -451,19 +342,6 @@ export function handleAddNewMedicineItem2(
     },
   ]);
 }
-
-/**
- * Видаляє останній елемент із масиву ліків
- * @param {*} setMedicineListItem Функція оновлення стану
- */
-
-/*export function handleRemoveMedicineItem(setMedicineListItem) {
-  setMedicineListItem((prevValue) => {
-    const newArr = [...prevValue];
-    newArr.pop();
-    return newArr;
-  });
-}*/
 
 export function handleRemoveMedicineItem(setMedicineListItem, index) {
   setMedicineListItem((prevValue) => {
@@ -571,6 +449,7 @@ export const handleDetailChange = (
   field,
   setMedicineListItem
 ) => {
+  
   const { type, checked, value } = e.target;
   const newValue = type === "checkbox" ? checked : value;
 
@@ -579,17 +458,44 @@ export const handleDetailChange = (
       medicine.id === medicineId
         ? {
             ...medicine,
-            medicineDetails: medicine.medicineDetails.map((detail) =>
-              detail.id === detailsId
-                ? {
-                    ...detail,
-                    [period]: {
-                      ...detail[period],
-                      [field]: newValue,
-                    },
+            medicineDetails: medicine.medicineDetails.map((detail) => {
+              if (detail.id === detailsId) {
+                if (e._reactName === "onAuxClick") {
+                  if (field === "isCompletedAndFinished") {
+                    return {
+                      ...detail,
+                      [period]: {
+                        ...detail[period],
+                        [field]: !detail[period][field],
+                        ["isCompleted"]: !detail[period]["isCompleted"],
+                      },
+                    };
+                  } else if (field === "isPlannedAndFinished") {
+                    return {
+                      ...detail,
+                      [period]: {
+                        ...detail[period],
+                        [field]: !detail[period][field],
+                      },
+                    };
                   }
-                : detail
-            ),
+                } else {
+                  if (detail[period]["isPlannedAndFinished"] == false) {
+                    return {
+                      ...detail,
+                      [period]: {
+                        ...detail[period],
+                        [field]: newValue,
+                      },
+                    };
+                  } else {
+                    return detail;
+                  }
+                }
+              } else {
+                return detail;
+              }
+            }),
           }
         : medicine
     )

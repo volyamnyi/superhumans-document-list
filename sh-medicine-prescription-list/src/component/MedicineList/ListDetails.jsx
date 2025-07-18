@@ -19,14 +19,11 @@ import {
   handleAddNewMedicineItem,
   handleRemoveMedicineItem,
   handleAddNewDayDetails,
-  handleAddNewDayDetails2,
   handleDelNewDayDetails,
-  handleDelNewDayDetails2,
   handleMedicineMethodChange,
   isEmpty,
   handleSubmit,
   getWeekDates,
-  getCustomWeekDates,
   formatDate,
   handleSearchedMedicineClick,
   handleCurrentRowClick,
@@ -149,7 +146,7 @@ export default function ListDetails(props) {
       (async () => {
         const result = await isDocumentEditing(id.split("|")[0]);
         if (result.status === 409) {
-          setErrorMessage("Документ зараз редагується іншим користувачем.");
+          setErrorMessage(result.response.data.message);
           if (ROLE === "DOCTOR") {
             setROLE("BLOCKED_DOCTOR");
           } else if (ROLE === "NURSE") {
@@ -213,9 +210,7 @@ export default function ListDetails(props) {
         handleAddNewMedicineItem={handleAddNewMedicineItem}
         handleRemoveMedicineItem={handleRemoveMedicineItem}
         handleAddNewDayDetails={handleAddNewDayDetails}
-        handleAddNewDayDetails2={handleAddNewDayDetails2}
         handleDelNewDayDetails={handleDelNewDayDetails}
-        handleDelNewDayDetails2={handleDelNewDayDetails2}
         handleMedicineMethodChange={handleMedicineMethodChange}
         handleSubmit={handleSubmit}
         handleSearchedMedicineClick={handleSearchedMedicineClick}

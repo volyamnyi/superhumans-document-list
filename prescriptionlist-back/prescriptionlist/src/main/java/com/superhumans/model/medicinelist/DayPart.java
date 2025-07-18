@@ -37,11 +37,13 @@ public class DayPart {
      * Прапорець, який вказує, чи заплановано цей прийом.
      */
     Boolean isPlanned;
+    Boolean isPlannedAndFinished;
 
     /**
      * Прапорець, який вказує, чи був цей прийом виконаний.
      */
     Boolean isCompleted;
+    Boolean isCompletedAndFinished;
 
     /**
      * Прапорець, який вказує, чи прострочений цей прийом.

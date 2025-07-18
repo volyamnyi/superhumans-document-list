@@ -195,7 +195,7 @@ public class MedicineListRepository {
                 );
             }
         } else {
-            throw new AppException("Документ зараз редагується іншим користувачем", HttpStatus.CONFLICT);
+            throw new AppException("Документ зараз редагується користувачем " + result.get(0).getStatus(), HttpStatus.CONFLICT);
         }
     }
 
@@ -220,7 +220,7 @@ public class MedicineListRepository {
         List<MedicineDetails> result = jdbcTemplate.query("SELECT Status FROM MedicineListItem WHERE MedicineListRef = ?;", mapper, id);
         if (!result.get(0).getStatus().equals("Saved")) {
             if (!result.get(0).getStatus().equals(getCurrentLogin())) {
-                throw new AppException("Документ зараз редагується іншим користувачем", HttpStatus.CONFLICT);
+                throw new AppException("Документ зараз редагується користувачем " + result.get(0).getStatus(), HttpStatus.CONFLICT);
             }
         }
 

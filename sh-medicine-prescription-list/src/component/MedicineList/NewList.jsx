@@ -11,15 +11,11 @@ import {
   handleAddNewMedicineItem,
   handleRemoveMedicineItem,
   handleAddNewDayDetails,
-  handleAddNewDayDetails2,
   handleDelNewDayDetails,
-  handleDelNewDayDetails2,
   handleMedicineMethodChange,
   isEmpty,
   handleSubmit,
   getWeekDates,
-  getCustomWeekDates,
-  formatDate,
   handleSearchedMedicineClick,
   handleCurrentRowClick,
   handleMedicineRegimeChange,
@@ -106,9 +102,7 @@ export default function NewList() {
         handleAddNewMedicineItem={handleAddNewMedicineItem}
         handleRemoveMedicineItem={handleRemoveMedicineItem}
         handleAddNewDayDetails={handleAddNewDayDetails}
-        handleAddNewDayDetails2={handleAddNewDayDetails2}
         handleDelNewDayDetails={handleDelNewDayDetails}
-        handleDelNewDayDetails2={handleDelNewDayDetails2}
         handleMedicineMethodChange={handleMedicineMethodChange}
         handleSubmit={handleSubmit}
         handleSearchedMedicineClick={handleSearchedMedicineClick}
