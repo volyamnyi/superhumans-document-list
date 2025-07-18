@@ -480,7 +480,7 @@ export const handleDetailChange = (
                     };
                   }
                 } else {
-                  if (detail[period]["isPlannedAndFinished"] == false) {
+                  if (!detail[period]["isPlannedAndFinished"]) {
                     return {
                       ...detail,
                       [period]: {
