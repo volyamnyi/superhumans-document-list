@@ -259,7 +259,8 @@ export default function List({
     generateDEDoc(medicineList.medicineListID, plusThreeHours);
     setShowSuccessModal(true);
   }
-  
+  //console.log(medicineDetails)
+  console.log(patientId);
   return (
     <>
       {/* first*/}
@@ -301,7 +302,11 @@ export default function List({
               <span>
                 {" "}
                 &nbsp;<strong>Заплановано і завершено</strong>
-                <br/><strong>(Середня кнопка мишки <br/>по голубому)</strong>
+                <br />
+                <strong>
+                  (Середня кнопка мишки <br />
+                  по голубому)
+                </strong>
               </span>
             </div>
             &nbsp;
@@ -322,7 +327,11 @@ export default function List({
               <span>
                 {" "}
                 &nbsp;<strong>Виконано і завершено</strong>
-                <br/><strong>(Середня кнопка мишки <br/>по фіолетовому)</strong>
+                <br />
+                <strong>
+                  (Середня кнопка мишки <br />
+                  по фіолетовому)
+                </strong>
               </span>
             </div>
             &nbsp;
@@ -332,6 +341,10 @@ export default function List({
                 style={{ backgroundColor: "#fff" }}
               ></label>{" "}
               &nbsp;- <span> &nbsp;Не заплановано</span>
+            </div>
+            &nbsp;
+            <div className="day-cell">
+            <span>шб. - Шкала болю</span>
             </div>
           </div>
           <div className="medicine-regime-container">
@@ -561,19 +574,23 @@ export default function List({
                                           return {
                                             backgroundColor: "lightblue",
                                           };
-                                        }
-                                        
-                                        else if (status.isCompleted && !status.isCompletedAndFinished) {
+                                        } else if (
+                                          status.isCompleted &&
+                                          !status.isCompletedAndFinished
+                                        ) {
                                           return {
                                             backgroundColor: "lightgreen",
                                           };
                                         }
-                                        
-                                        if (status.isPlannedAndFinished && !status.isCompletedAndFinished) {
+
+                                        if (
+                                          status.isPlannedAndFinished &&
+                                          !status.isCompletedAndFinished
+                                        ) {
                                           return { backgroundColor: "purple" };
-                                        }
-                                        
-                                        else if (status.isCompletedAndFinished) {
+                                        } else if (
+                                          status.isCompletedAndFinished
+                                        ) {
                                           return {
                                             backgroundColor: "darkgreen",
                                           };
@@ -672,6 +689,32 @@ export default function List({
                                         className="day-cell-dose-input"
                                       ></textarea>
                                     }
+                                    {(period === "morning" ||
+                                      period === "evening") && (
+                                      <input
+                                        style={{ fontWeight: "bold" }}
+                                        type="number"
+                                        name="pain"
+                                        min={0}
+                                        max={10}
+                                        value={details[period].pain}
+                                        disabled={isScaled}
+                                        placeholder="шб."
+                                        onChange={(e) => {
+                                          !isScaled &&
+                                            handleDetailChange(
+                                              e,
+                                              medicineRow.id,
+                                              details.id,
+                                              period,
+                                              "pain",
+                                              setMedicineListItem
+                                            );
+                                        }}
+                                        className="day-cell-dose-input"
+                                      ></input>
+                                    )}
+
                                     {/*<input
                                           style={{ fontWeight: "bold" }}
                                           name="time"

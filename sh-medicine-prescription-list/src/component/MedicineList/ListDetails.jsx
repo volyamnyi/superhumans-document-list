@@ -84,9 +84,13 @@ export default function ListDetails(props) {
           medicineList.medicineDetails.map((md1) => {
             md1.medicineDetails.map((md2) => {
               md2.morning.isCompleted = false;
+              md2.morning.pain=""
               md2.day.isCompleted = false;
+              md2.day.pain=""
               md2.evening.isCompleted = false;
+              md2.evening.pain=""
               md2.night.isCompleted = false;
+              md2.night.pain=""
             });
           });
 
@@ -203,6 +207,7 @@ export default function ListDetails(props) {
       {!isScaled && <DocumentHeader id={id.split("|")[1]} />}
       <List
         isNew={isNew}
+        patientId={id.split("|")[1]}
         isCopy={props.isCopy}
         setIsNew={setIsNew}
         handleItemChange={handleItemChange}
