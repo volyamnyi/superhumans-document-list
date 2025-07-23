@@ -1,5 +1,11 @@
 import React from "react";
-import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  useNavigate,
+  useLocation,
+  Navigate,
+} from "react-router-dom";
 
 import Home from "./component/Home";
 import Main from "./component/Main";
@@ -17,7 +23,6 @@ import _403 from "./component/auth/_403";
 function App() {
   const auth = React.useContext(AuthContext);
   const isLoggedIn = localStorage.getItem("accessToken");
-
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -28,9 +33,10 @@ function App() {
   return (
     <>
       <Main>
-         &nbsp;&nbsp;&nbsp;<img src="/superhumans.svg" width={100}></img><br></br>
-        {isLoggedIn && (
-           <a className="dropdown-item" href="#" onClick={handleLogout}>
+        &nbsp;&nbsp;&nbsp;<img src="/superhumans.svg" width={100}></img>
+        <br></br>
+        {isLoggedIn && useLocation().pathname === "/" && (
+          <a className="dropdown-item" href="#" onClick={handleLogout}>
             &nbsp;&nbsp;&nbsp; Вийти
           </a>
         )}
@@ -80,7 +86,7 @@ function App() {
             path="/listdetails/copy/:id"
             element={
               <RequireAuth>
-                <ListDetails isCopy={true}/>
+                <ListDetails isCopy={true} />
               </RequireAuth>
             }
           />

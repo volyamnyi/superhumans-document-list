@@ -676,7 +676,7 @@ export default function List({
                                         disabled={isScaled}
                                         placeholder="доз."
                                         onChange={(e) => {
-                                          !isScaled &&
+                                          ROLE === "DOCTOR" && !isScaled &&
                                             handleDetailChange(
                                               e,
                                               medicineRow.id,
