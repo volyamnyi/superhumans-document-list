@@ -45,6 +45,38 @@ export default function List({
   const [presentation, setPresentation] = useState(3);
   const textareaRef = useRef(null);
   const navigate = useNavigate();
+
+  const redirectTo =`/patientdetails/${patientId}`;
+  const timeout = 5 * 60 * 1000;
+
+  const timerRef = useRef(null);
+
+  const resetTimer = () => {
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    timerRef.current = setTimeout(() => {
+      navigate(redirectTo);
+    }, timeout);
+  };
+
+  useEffect(() => {
+    const events = ['mousemove', 'keydown', 'scroll', 'click', 'touchstart'];
+    const handleActivity = () => resetTimer();
+
+    events.forEach(event => window.addEventListener(event, handleActivity));
+    resetTimer(); 
+
+    return () => {
+      clearTimeout(timerRef.current);
+      events.forEach(event => window.removeEventListener(event, handleActivity));
+    };
+  }, []);
+
+
+
+
+
   const [showRegime, setShowRegime] = useState(!isNew);
 
   const months = {
@@ -259,8 +291,11 @@ export default function List({
     generateDEDoc(medicineList.medicineListID, plusThreeHours);
     setShowSuccessModal(true);
   }
-  //console.log(medicineDetails)
-  console.log(patientId);
+  
+  
+
+
+
   return (
     <>
       {/* first*/}
@@ -818,8 +853,7 @@ export default function List({
               Зберегти
             </button>
 
-            {(localStorage.getItem("businessRole") == "NURSE" ||
-              localStorage.getItem("userRole") == "ADMIN") && (
+          
               <button
                 type="button"
                 className="save-button"
@@ -827,7 +861,7 @@ export default function List({
               >
                 Згенерувати листок в Доктор Елекс
               </button>
-            )}
+            
           </div>
         )}
       </form>

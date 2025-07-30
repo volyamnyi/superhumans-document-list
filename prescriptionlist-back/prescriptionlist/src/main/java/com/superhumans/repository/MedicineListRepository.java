@@ -25,10 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -248,10 +245,12 @@ public class MedicineListRepository {
 
         List<MedicineDetails> result = jdbcTemplate.query("SELECT Status FROM MedicineListItem WHERE MedicineListRef = ?;", mapper, id);
         if (result.get(0).getStatus().equals("Saved") || result.get(0).getStatus().equals(getCurrentLogin())) {
-            String sql = "UPDATE MedicineListItem SET Status = ? WHERE MedicineListRef = ?;";
+            LocalDateTime now = LocalDateTime.now();
+            String sql = "UPDATE MedicineListItem SET Status = ?, MedicineListItemLastVisitTime = ? WHERE MedicineListRef = ?;";
             jdbcTemplate.update(
                     sql,
                     status,
+                    now,
                     id
             );
         }
@@ -266,7 +265,7 @@ public class MedicineListRepository {
      */
     public static String getUsernameFromJwt(String token) {
         DecodedJWT decodedJWT = JWT.decode(token);
-        return decodedJWT.getSubject(); // Typically, "sub" claim holds the username
+        return decodedJWT.getSubject();
     }
 
     /**
@@ -278,7 +277,7 @@ public class MedicineListRepository {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof User) {
             User user = (User) authentication.getPrincipal();
-            return user.getLogin(); // Extract the `login` field
+            return user.getLogin();
         }
         return null;
     }
@@ -333,23 +332,6 @@ public class MedicineListRepository {
         };
 
         String ascDesc = order ? "ASC" : "DESC";
-
-        /*return jdbcTemplate.query(
-                "Select PatientID, PatientName," +
-                        "PatientHistoryNumber," +
-                        "PatientAddress," +
-                        "PatientPhone," +
-                        "v2.VenueName AS VenueLevel2," +
-                        "v1.VenueName AS VenueLevel1," +
-                        "v.VenueName AS VenueLevel0," +
-                        "PatientSexRef," +
-                        "DATEDIFF(YEAR, PatientBirthDate, GETDATE()) as Age, PatientBirthDate, u.UserName AS Doctor  from Patient " +
-                        "left join Residence r on PatientRef = PatientID and ResidenceStatusRef = N'PRG'" +
-                        "left join venue v on r.VenueRef = v.VenueID " +
-                        "left join venue v1 on v.VenueParentRef = v1.VenueID " +
-                        "left join venue v2 on v1.VenueParentRef = v2.VenueID " +
-                        "left join Users u on u.UserLogin = r.UserRef " +
-                        "where ResidenceSequence1Ref in (19) ORDER BY PatientName " + ascDesc + ";", mapper);*/
 
         List<Patient> patients = jdbcTemplate.query(
                 "Select PatientID, PatientName," +
