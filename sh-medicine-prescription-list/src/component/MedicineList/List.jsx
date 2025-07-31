@@ -46,7 +46,7 @@ export default function List({
   const textareaRef = useRef(null);
   const navigate = useNavigate();
 
-  const redirectTo =`/patientdetails/${patientId}`;
+  const redirectTo = `/patientdetails/${patientId}`;
   const timeout = 5 * 60 * 1000;
 
   const timerRef = useRef(null);
@@ -61,21 +61,19 @@ export default function List({
   };
 
   useEffect(() => {
-    const events = ['mousemove', 'keydown', 'scroll', 'click', 'touchstart'];
+    const events = ["mousemove", "keydown", "scroll", "click", "touchstart"];
     const handleActivity = () => resetTimer();
 
-    events.forEach(event => window.addEventListener(event, handleActivity));
-    resetTimer(); 
+    events.forEach((event) => window.addEventListener(event, handleActivity));
+    resetTimer();
 
     return () => {
       clearTimeout(timerRef.current);
-      events.forEach(event => window.removeEventListener(event, handleActivity));
+      events.forEach((event) =>
+        window.removeEventListener(event, handleActivity)
+      );
     };
   }, []);
-
-
-
-
 
   const [showRegime, setShowRegime] = useState(!isNew);
 
@@ -291,10 +289,6 @@ export default function List({
     generateDEDoc(medicineList.medicineListID, plusThreeHours);
     setShowSuccessModal(true);
   }
-  
-  
-
-
 
   return (
     <>
@@ -379,7 +373,7 @@ export default function List({
             </div>
             &nbsp;
             <div className="day-cell">
-            <span>шб. - Шкала болю</span>
+              <span>шб. - Шкала болю</span>
             </div>
           </div>
           <div className="medicine-regime-container">
@@ -572,22 +566,38 @@ export default function List({
                       {
                         /*details.date >= startDate2 &&
                         details.date <= endDate2 &&*/ <div className="medicine-presc-details-row-first-div">
-                          <div
-                            className="medicine-date"
-                            key={j}
-                            style={{ fontWeight: "bold" }}
-                          >
-                            {/*details.date.split("-").reverse().join("-")*/}
-                            {`${details.date.split("-")[2]} ${
-                              months[details.date.split("-")[1]]
-                            } ${details.date.split("-")[0]}`}
-                            <div className="day-period">
-                              <div>Р</div>
-                              <div>Д</div>
-                              <div>В</div>
-                              <div>Н</div>
-                            </div>
-                          </div>
+                          {(() => {
+                            try {
+                              return (
+                                <div
+                                  className="medicine-date"
+                                  key={j}
+                                  style={{ fontWeight: "bold" }}
+                                >
+                                  {`${details.date.split("-")[2]} ${
+                                    months[details.date.split("-")[1]]
+                                  } ${details.date.split("-")[0]}`}
+                                  <div className="day-period">
+                                    <div>Р</div>
+                                    <div>Д</div>
+                                    <div>В</div>
+                                    <div>Н</div>
+                                  </div>
+                                </div>
+                              );
+                            } catch (error) {
+                              console.error("Error rendering date:", error);
+                              return (
+                                <div
+                                  className="medicine-date"
+                                  key={j}
+                                  style={{ fontWeight: "bold", color: "red" }}
+                                >
+                                  Не вірна дата
+                                </div>
+                              );
+                            }
+                          })()}
                           <div
                             key={details.id}
                             className="medicine-presc-details-column"
@@ -711,7 +721,8 @@ export default function List({
                                         disabled={isScaled}
                                         placeholder="доз."
                                         onChange={(e) => {
-                                          ROLE === "DOCTOR" && !isScaled &&
+                                          ROLE === "DOCTOR" &&
+                                            !isScaled &&
                                             handleDetailChange(
                                               e,
                                               medicineRow.id,
@@ -853,15 +864,13 @@ export default function List({
               Зберегти
             </button>
 
-          
-              <button
-                type="button"
-                className="save-button"
-                onClick={handleGenerateDEDoc}
-              >
-                Згенерувати листок в Доктор Елекс
-              </button>
-            
+            <button
+              type="button"
+              className="save-button"
+              onClick={handleGenerateDEDoc}
+            >
+              Згенерувати листок в Доктор Елекс
+            </button>
           </div>
         )}
       </form>
